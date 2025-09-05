@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Minamahal ko 💙</title>
 <style>
-  /* Reset */
   * {
     margin: 0;
     padding: 0;
@@ -178,7 +177,6 @@
     background: rgba(30, 144, 255, 1);
   }
 
-  /* Play triangle icon */
   #playButton:before {
     content: "";
     display: inline-block;
@@ -188,7 +186,6 @@
     border-color: transparent transparent transparent white;
   }
 
-  /* Responsive */
   @media (max-width: 700px) {
     .container {
       flex-direction: column;
@@ -268,20 +265,32 @@
     audio.currentTime = progress.value;
   });
 
+  function requestFullscreen() {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { // Safari
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { // IE11
+      elem.msRequestFullscreen();
+    }
+  }
+
   function playAudio() {
+    requestFullscreen(); // Request fullscreen after user interaction
+
     audio.play().then(() => {
-      // Hide play button once playing
       playButton.style.display = 'none';
     }).catch((error) => {
       console.log("Playback prevented:", error);
     });
   }
 
-  // When user clicks the cover or play button, start music
+  // Click handlers
   playButton.addEventListener('click', playAudio);
   coverContainer.addEventListener('click', playAudio);
 
-  // Optionally, you can also show the play button on pause
+  // Show/hide play button based on audio state
   audio.addEventListener('pause', () => {
     playButton.style.display = 'flex';
   });
@@ -290,16 +299,14 @@
     playButton.style.display = 'none';
   });
 
-  
+  // Show play button initially
   playButton.style.display = 'flex';
 
-  audio.play().catch(() => {
- 
-    playButton.style.display = 'flex';
-  });
+  // Don't autoplay (browsers block it)
+  // audio.play().catch(() => {
+  //   playButton.style.display = 'flex';
+  // });
 </script>
 
 </body>
 </html>
-
-
