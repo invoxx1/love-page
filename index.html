@@ -233,14 +233,14 @@
 </div>
 
 <div class="center">
-  <div class="cover" id="coverContainer" tabindex="0">
+  <div class="cover" id="coverContainer" tabindex="0" role="button" aria-label="Play or pause audio">
     <img src="cover.jpg" alt="Cover" style="width:100%; border-radius: 20px;" id="coverImage" />
     <div id="playButton"></div>
   </div>
   <h2 id="songTitle">I'll Take Care of You</h2>
   <p class="artist" id="artistName">Tyler, The Creator 💙</p>
 
-  <audio id="audio">
+  <audio id="audio" preload="metadata">
     <source src="music.mp3" type="audio/mpeg" />
     Your browser does not support the audio element.
   </audio>
@@ -286,6 +286,7 @@
   };
 
   let currentTrack = 1;
+  let fullscreenRequested = false;
 
   // Format time in mm:ss
   function formatTime(seconds) {
@@ -309,23 +310,28 @@
   });
 
   function requestFullscreen() {
+    if (fullscreenRequested) return; // Only request once per page load
+
     const elem = document.documentElement;
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) { // Safari
+    } else if (elem.webkitRequestFullscreen) {
       elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) { // IE11
+    } else if (elem.msRequestFullscreen) {
       elem.msRequestFullscreen();
     }
+    fullscreenRequested = true;
   }
 
   function playAudio() {
-    requestFullscreen(); // Request fullscreen after user interaction
+    // Request fullscreen only once on first user interaction
+    if (!fullscreenRequested) requestFullscreen();
 
     audio.play().then(() => {
       playButton.style.display = 'none';
     }).catch((error) => {
-      console.log("Playback prevented:", error);
+      console.error("Playback prevented:", error);
+      playButton.style.display = 'flex';
     });
   }
 
@@ -362,7 +368,8 @@
 
     updateSwitchButton();
 
-    audio.play().catch(() => {
+    audio.play().catch((err) => {
+      console.error("Playback error after switching track:", err);
       playButton.style.display = 'flex';
     });
   });
