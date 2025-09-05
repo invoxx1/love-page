@@ -12,28 +12,27 @@
     }
 
     body, html {
-      min-height: 100%;
+      height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: white;
-      background: #000;
       overflow-x: hidden;
+      background: #000;
     }
 
     .container {
       display: flex;
-      flex-direction: row;
-      width: 100%;
       height: 100vh;
+      width: 100vw;
     }
 
     .side {
-      flex: 1;
+      width: 50vw;
+      height: 100vh;
       background-position: center;
       background-size: cover;
       background-repeat: no-repeat;
       filter: brightness(0.75);
       transition: filter 0.3s ease;
-      min-height: 200px;
     }
 
     .side.left {
@@ -49,72 +48,42 @@
     }
 
     .center {
-      position: relative;
-      width: 100%;
-      max-width: 400px;
-      margin: auto;
-      padding: 2rem 1rem;
-      text-align: center;
-      color: white;
-    }
-
-    .cover {
-      width: 100%;
-      max-width: 400px;
-      margin: 0 auto 1rem;
-      position: relative;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(30, 144, 255, 0.6);
-      overflow: hidden;
-      cursor: pointer;
-    }
-
-    .cover img {
-      width: 100%;
-      display: block;
-      border-radius: 20px;
-    }
-
-    #playButton {
-      position: absolute;
+      position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(30, 144, 255, 0.7);
-      border-radius: 50%;
-      width: 70px;
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 320px;
+      background: rgba(0, 0, 0, 0);
+      text-align: center;
+      color: white;
+      font-weight: 600;
+      user-select: none;
+      z-index: 10;
+    }
+
+    .cover {
+      width: 320px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(30, 144, 255, 0.6);
+      margin-bottom: 1rem;
+      position: relative;
       cursor: pointer;
-      transition: background 0.3s ease;
-      box-shadow: 0 0 20px rgba(30,144,255,0.7);
-    }
-
-    #playButton:before {
-      content: "";
-      display: inline-block;
-      margin-left: 5px;
-      border-style: solid;
-      border-width: 15px 0 15px 25px;
-      border-color: transparent transparent transparent white;
-    }
-
-    #playButton:hover {
-      background: rgba(30, 144, 255, 1);
     }
 
     h2 {
+      margin: 0 0 5px 0;
       font-size: 22px;
-      margin: 0 0 5px;
     }
 
     p.artist {
-      color: #1e90ff;
+      margin: 0 0 20px 0;
       font-weight: 400;
       font-size: 16px;
-      margin-bottom: 20px;
+      color: #1e90ff;
+    }
+
+    audio {
+      display: none;
     }
 
     .time {
@@ -122,8 +91,9 @@
       color: #63b3ff;
       display: flex;
       justify-content: space-between;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
       user-select: none;
+      font-weight: 500;
     }
 
     input[type=range] {
@@ -145,6 +115,19 @@
       border-radius: 50%;
       margin-top: -4px;
       cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    input[type=range]:hover::-webkit-slider-thumb {
+      background: #63b3ff;
+      box-shadow: 0 0 12px #63b3ff;
+    }
+
+    input[type=range]::-moz-range-track {
+      height: 4px;
+      background: #1e90ff;
+      border-radius: 2px;
+      box-shadow: 0 0 8px #1e90ff;
     }
 
     input[type=range]::-moz-range-thumb {
@@ -154,12 +137,18 @@
       box-shadow: 0 0 10px #1e90ff;
       border-radius: 50%;
       cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    input[type=range]:hover::-moz-range-thumb {
+      background: #63b3ff;
+      box-shadow: 0 0 12px #63b3ff;
     }
 
     p.footer {
       font-size: 13px;
       color: #63b3ff;
-      margin-top: 15px;
+      text-shadow: 0 0 5px rgba(0,0,0,0.7);
     }
 
     .blue-heart {
@@ -167,34 +156,64 @@
       text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
     }
 
-    /* ============================
-       📱 Responsive Adjustments
-    ============================= */
+    #playButton {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(30, 144, 255, 0.7);
+      border-radius: 50%;
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      box-shadow: 0 0 20px rgba(30,144,255,0.7);
+    }
 
-    @media (max-width: 1024px) {
+    #playButton:hover {
+      background: rgba(30, 144, 255, 1);
+    }
+
+    #playButton:before {
+      content: "";
+      display: inline-block;
+      margin-left: 5px;
+      border-style: solid;
+      border-width: 15px 0 15px 25px;
+      border-color: transparent transparent transparent white;
+    }
+
+    /* MOBILE STYLES */
+    @media (max-width: 700px) {
+      body, html {
+        overflow-y: auto;
+      }
+
       .container {
         flex-direction: column;
         height: auto;
       }
 
       .side {
+        width: 100vw;
         height: 30vh;
-        width: 100%;
       }
 
       .center {
-        padding: 1.5rem 1rem;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .center {
-        max-width: 90%;
-        padding: 1rem 0.5rem;
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        width: 90%;
+        margin: 20px auto;
+        padding-bottom: 30px;
       }
 
       .cover {
-        max-width: 100%;
+        width: 100%;
       }
 
       #playButton {
@@ -210,8 +229,16 @@
         font-size: 20px;
       }
 
-      p.artist, .time, p.footer {
+      p.artist {
+        font-size: 15px;
+      }
+
+      .time {
         font-size: 13px;
+      }
+
+      p.footer {
+        font-size: 12px;
       }
     }
   </style>
@@ -220,29 +247,30 @@
 
   <div class="container">
     <div class="side left"></div>
-    <div class="center">
-      <div class="cover" id="coverContainer" tabindex="0">
-        <img src="cover.jpg" alt="Cover" />
-        <div id="playButton"></div>
-      </div>
-      <h2>I'll Take Care of You</h2>
-      <p class="artist">Tyler, The Creator 💙</p>
-
-      <audio id="audio">
-        <source src="music.mp3" type="audio/mpeg" />
-        Your browser does not support the audio element.
-      </audio>
-
-      <div class="time">
-        <span id="currentTime">0:00</span>
-        <span id="duration">0:00</span>
-      </div>
-
-      <input type="range" id="progress" value="0" min="0" max="100" />
-
-      <p class="footer">To the love of my life <span class="blue-heart">💙</span></p>
-    </div>
     <div class="side right"></div>
+  </div>
+
+  <div class="center">
+    <div class="cover" id="coverContainer" tabindex="0">
+      <img src="cover.jpg" alt="Cover" style="width:100%; border-radius: 20px;" />
+      <div id="playButton"></div>
+    </div>
+    <h2>I'll Take Care of You</h2>
+    <p class="artist">Tyler, The Creator 💙</p>
+
+    <audio id="audio">
+      <source src="music.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+
+    <div class="time">
+      <span id="currentTime">0:00</span>
+      <span id="duration">0:00</span>
+    </div>
+
+    <input type="range" id="progress" value="0" min="0" max="100" />
+
+    <p class="footer">To the love of my life <span class="blue-heart">💙</span></p>
   </div>
 
   <script>
@@ -256,49 +284,3 @@
     function formatTime(seconds) {
       const mins = Math.floor(seconds / 60);
       const secs = Math.floor(seconds % 60);
-      return mins + ':' + (secs < 10 ? '0' : '') + secs;
-    }
-
-    audio.addEventListener('loadedmetadata', () => {
-      durationElem.textContent = formatTime(audio.duration);
-      progress.max = Math.floor(audio.duration);
-    });
-
-    audio.addEventListener('timeupdate', () => {
-      progress.value = Math.floor(audio.currentTime);
-      currentTimeElem.textContent = formatTime(audio.currentTime);
-    });
-
-    progress.addEventListener('input', () => {
-      audio.currentTime = progress.value;
-    });
-
-    function playAudio() {
-      audio.play().then(() => {
-        playButton.style.display = 'none';
-      }).catch((error) => {
-        console.log("Playback prevented:", error);
-      });
-    }
-
-    playButton.addEventListener('click', playAudio);
-    coverContainer.addEventListener('click', playAudio);
-
-    audio.addEventListener('pause', () => {
-      playButton.style.display = 'flex';
-    });
-
-    audio.addEventListener('play', () => {
-      playButton.style.display = 'none';
-    });
-
-    // Show play button if autoplay blocked
-    playButton.style.display = 'flex';
-
-    audio.play().catch(() => {
-      playButton.style.display = 'flex';
-    });
-  </script>
-
-</body>
-</html>
