@@ -3,82 +3,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>I'll Take Care of You 💚</title>
+  <title>Our Love 💚</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
 
     body {
-      margin: 0;
-      padding: 0;
-      background: url('background.jpg') no-repeat center center fixed;
-      background-size: cover;
-      font-family: 'Montserrat', sans-serif;
+      background-color: #000;
       color: white;
+      font-family: 'Montserrat', sans-serif;
       height: 100vh;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      text-align: center;
+      background-size: cover;
+      overflow: hidden;
     }
 
-    .overlay {
-      background: rgba(0, 0, 0, 0.75);
-      padding: 2rem;
+    .side-image {
+      width: 35%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .left {
+      background-image: url('left.jpg');
+    }
+
+    .right {
+      background-image: url('right.jpg');
+    }
+
+    .player-container {
+      width: 30%;
+      background: rgba(0, 0, 0, 0.4);
       border-radius: 20px;
-      max-width: 340px;
-      width: 90%;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      padding: 1.5rem;
+      text-align: center;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .overlay img {
+    .player-container:hover {
+      background: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 15px rgba(30, 215, 96, 0.5);
+    }
+
+    .player-container img {
       width: 100%;
       border-radius: 15px;
       margin-bottom: 1rem;
     }
 
     h2 {
+      font-size: 1.3rem;
       margin: 0.5rem 0;
-      font-size: 1.4rem;
     }
 
     h3 {
-      margin: 0;
-      font-size: 1rem;
-      font-weight: 400;
+      font-size: 0.9rem;
       color: #ccc;
+      margin-bottom: 1rem;
     }
 
     audio {
       width: 100%;
-      margin-top: 1rem;
     }
 
     .note {
       margin-top: 1rem;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       color: #ccc;
     }
 
-    @media (max-width: 480px) {
-      .overlay {
-        padding: 1.2rem;
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+        justify-content: center;
       }
 
-      h2 {
-        font-size: 1.2rem;
+      .side-image {
+        display: none;
       }
 
-      h3 {
-        font-size: 0.9rem;
+      .player-container {
+        width: 90%;
+        margin: 2rem auto;
       }
     }
   </style>
 </head>
 <body>
-  <div class="overlay">
+  <div class="side-image left"></div>
+
+  <div class="player-container">
     <img src="cover.jpg" alt="Our Love">
     <h2>I'll Take Care of You</h2>
     <h3>Tyler, The Creator 💚</h3>
@@ -86,7 +109,9 @@
       <source src="music.mp3" type="audio/mp3">
       Your browser does not support the audio element.
     </audio>
-    <div class="note">This one’s for us 💖</div>
+    <div class="note">To the love of my life 💖</div>
   </div>
+
+  <div class="side-image right"></div>
 </body>
 </html>
