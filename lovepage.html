@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>For My Love ❤️</title>
+  <style>
+    :root {
+      --primary-color: #ff4d6d;
+      --bg-color: #fff0f5;
+      --heart-color: #ff69b4;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-color);
+      font-family: 'Segoe UI', cursive, sans-serif;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin: 1.5rem 1rem 0.5rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #e60073;
+      margin: 0 1rem 1rem;
+    }
+
+    .hearts {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    audio {
+      display: none;
+    }
+
+    /* Falling hearts */
+    .heart {
+      position: absolute;
+      top: -40px;
+      animation: fall linear infinite;
+      color: var(--heart-color);
+      font-size: 24px;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh);
+      }
+    }
+
+    /* Make text responsive */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+      p {
+        font-size: 1rem;
+      }
+      .hearts {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Hey My Love 💖</h1>
+  <p>You are the sunshine in my world and the beat in my heart.</p>
+  <p class="hearts">💗 💞 💕 💓 💖</p>
+
+  <!-- Background music -->
+  <audio autoplay loop>
+    <source src="music.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- Falling hearts -->
+  <script>
+    const numHearts = 25;
+    for (let i = 0; i < numHearts; i++) {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.innerText = '💖';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (3 + Math.random() * 5) + 's';
+      heart.style.fontSize = (16 + Math.random() * 16) + 'px';
+      document.body.appendChild(heart);
+    }
+  </script>
+</body>
+</html>
