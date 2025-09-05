@@ -314,26 +314,14 @@
     }
   };
 
-  // Start with track 2 loaded (music 2 plays only)
-  let currentTrack = 2;
+  let currentTrack = 1;
+  let fullscreenRequested = false;
 
   // Format time in mm:ss
   function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return mins + ':' + (secs < 10 ? '0' : '') + secs;
-  }
-
-  // Load current track data to audio and UI
-  function loadTrack(trackNumber) {
-    const song = songs[trackNumber];
-    audio.pause();
-    audio.querySelector('source').src = song.src;
-    audio.load();
-    coverImage.src = song.cover;
-    songTitle.textContent = song.title;
-    artistName.textContent = song.artist;
-    updateSwitchButton();
   }
 
   audio.addEventListener('loadedmetadata', () => {
@@ -350,8 +338,23 @@
     audio.currentTime = progress.value;
   });
 
-  // Play audio and hide play button
+  function requestFullscreen() {
+    if (fullscreenRequested) return; // Only request once per page load
+
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    }
+    fullscreenRequested = true;
+  }
+
   function playAudio() {
+    if (!fullscreenRequested) requestFullscreen();
+
     audio.play().then(() => {
       playButton.style.display = 'none';
     }).catch((error) => {
@@ -360,51 +363,62 @@
     });
   }
 
-  // Toggle play/pause on cover or play button click
-  playButton.addEventListener('click', () => {
-    if (audio.paused) {
-      playAudio();
-    } else {
-      audio.pause();
-    }
-  });
+  // Click handlers for play button and cover
+  playButton.addEventListener('click', playAudio);
+  coverContainer.addEventListener('click', playAudio);
 
-  coverContainer.addEventListener('click', () => {
-    if (audio.paused) {
-      playAudio();
-    } else {
-      audio.pause();
-    }
-  });
-
-  // Show play button when paused
   audio.addEventListener('pause', () => {
     playButton.style.display = 'flex';
   });
 
-  // Hide play button when playing
   audio.addEventListener('play', () => {
     playButton.style.display = 'none';
   });
 
-  // Update switch button label to the other song
   function updateSwitchButton() {
     const otherTrack = currentTrack === 1 ? 2 : 1;
     const song = songs[otherTrack];
     switchBtn.innerHTML = `${song.title}<br><small style="font-weight: normal;">by ${song.artist}</small>`;
   }
 
-  // Switch track on button click
   switchBtn.addEventListener('click', () => {
     currentTrack = currentTrack === 1 ? 2 : 1;
-    loadTrack(currentTrack);
-    playAudio();
+    const song = songs[currentTrack];
+
+    // Pause current audio
+    audio.pause();
+
+    // Change the source element's src attribute
+    const source = audio.querySelector('source');
+    source.src = song.src;
+
+    // Update UI
+    coverImage.src = song.cover;
+    songTitle.textContent = song.title;
+    artistName.textContent = song.artist;
+
+    // Reload audio with new source
+    audio.load();
+
+    // Play new audio track after loading
+    audio.play().then(() => {
+      playButton.style.display = 'none';
+    }).catch(err => {
+      console.error('Playback error after switching track:', err);
+      playButton.style.display = 'flex';
+    });
+
+    updateSwitchButton();
   });
 
-  // Load initial track (track 2 only)
-  loadTrack(currentTrack);
+  // Initial button label
+  updateSwitchButton();
 
+  // Show play button initially
+  playButton.style.display = 'flex';
 </script>
+
 
 </body>
 </html>
+
