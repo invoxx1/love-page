@@ -1,134 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Our Love 💚</title>
-  <style>
-    /* Reset and basic styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Our Love 💚</title>
+<style>
+  /* Reset */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-    body, html {
-      height: 100%;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+  body, html {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    overflow: hidden;
+    background: #000;
+  }
 
+  .container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .side {
+    width: 50vw;
+    height: 100vh;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: brightness(0.75);
+    transition: filter 0.3s ease;
+  }
+
+  .side.left {
+    background-image: url('left.jpg');
+  }
+
+  .side.right {
+    background-image: url('right.jpg');
+  }
+
+  .side:hover {
+    filter: brightness(0.9);
+  }
+
+  .center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    background: rgba(0, 0, 0, 0.0); /* fully transparent */
+    text-align: center;
+    color: white;
+    font-weight: 600;
+    user-select: none;
+  }
+
+  .cover {
+    width: 320px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 255, 100, 0.6);
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    margin: 0 0 5px 0;
+    font-size: 22px;
+  }
+
+  p.artist {
+    margin: 0 0 20px 0;
+    font-weight: 400;
+    font-size: 16px;
+    color: #1db954;
+  }
+
+  audio {
+    width: 100%;
+    border-radius: 12px;
+    outline: none;
+    cursor: pointer;
+    background: rgba(255 255 255 / 0.2);
+    margin-bottom: 15px;
+  }
+
+  audio:hover {
+    box-shadow: 0 0 10px rgba(0, 255, 100, 0.8);
+  }
+
+  p.footer {
+    font-size: 13px;
+    color: #ff99cc;
+  }
+
+  /* Responsive */
+  @media (max-width: 700px) {
     .container {
-      display: flex;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    .side-image {
-      flex: 1;
-      background-size: cover;
-      background-position: center;
-      filter: brightness(0.7);
-      transition: filter 0.3s ease;
-    }
-
-    .side-image.left {
-      background-image: url('your-left-image.jpg'); /* Replace with your left image path */
-    }
-
-    .side-image.right {
-      background-image: url('your-right-image.jpg'); /* Replace with your right image path */
-    }
-
-    .side-image:hover {
-      filter: brightness(0.85);
-    }
-
-    .player-container {
-      flex: 0 0 30%;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 2rem 1.5rem;
-      text-align: center;
-      color: white;
-      display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      transition: background 0.3s ease, box-shadow 0.3s ease;
     }
-
-    .player-container:hover {
-      background: rgba(255, 255, 255, 0.2);
-      box-shadow: 0 0 15px rgba(30, 215, 96, 0.5);
+    .side {
+      width: 100vw;
+      height: 30vh;
     }
-
-    .album-cover {
-      width: 250px;
-      height: 250px;
-      border-radius: 20px;
-      margin-bottom: 1rem;
-      object-fit: cover;
-      box-shadow: 0 0 20px rgba(30, 215, 96, 0.5);
+    .center {
+      position: static;
+      transform: none;
+      width: 90vw;
+      margin: 20px auto;
     }
-
-    h2 {
-      margin-bottom: 0.3rem;
-      font-weight: 700;
-      font-size: 1.5rem;
-    }
-
-    p.artist {
-      font-weight: 600;
-      color: #1db954;
-      margin-bottom: 1.2rem;
-    }
-
-    audio {
+    .cover {
       width: 100%;
-      margin-bottom: 1.5rem;
-      border-radius: 10px;
-      outline: none;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.2);
     }
-
-    .footer-text {
-      font-size: 0.85rem;
-      color: #ddd;
-    }
-
-    .footer-text span {
-      margin-left: 0.3rem;
-      font-size: 1.2rem;
-    }
-
-  </style>
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="side-image left"></div>
-    <div class="player-container">
-      <img
-        src="https://i.scdn.co/image/ab67616d0000b27398cb2edc60eae3e6d507a11f"
-        alt="Album Cover"
-        class="album-cover"
-      />
-      <h2>I'll Take Care of You</h2>
-      <p class="artist">Tyler, The Creator 💚</p>
-      <audio controls>
-        <source src="music.mp3" type="audio/mpeg" />
-        Your browser does not support the audio element.
-      </audio>
-      <div class="footer-text">To the love of my life <span>💖</span></div>
-    </div>
-    <div class="side-image right"></div>
-  </div>
+
+<div class="container">
+  <div class="side left"></div>
+  <div class="side right"></div>
+</div>
+
+<div class="center">
+  <img src="cover.jpg" alt="Cover" class="cover" />
+  <h2>I'll Take Care of You</h2>
+  <p class="artist">Tyler, The Creator 💚</p>
+  <audio controls>
+    <source src="music.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
+  <p class="footer">To the love of my life 💖</p>
+</div>
+
 </body>
 </html>
