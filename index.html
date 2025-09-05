@@ -66,6 +66,8 @@
     border-radius: 20px;
     box-shadow: 0 0 20px rgba(30, 144, 255, 0.6); /* blue glow */
     margin-bottom: 1rem;
+    position: relative;
+    cursor: pointer;
   }
 
   h2 {
@@ -80,33 +82,20 @@
     color: #1e90ff; /* Dodger Blue */
   }
 
-  /* Custom audio player styles */
   audio {
-    width: 100%;
-    outline: none;
-    cursor: pointer;
-    background: transparent;
-    margin-bottom: 10px;
+    display: none; /* hide native controls, we have custom player */
   }
 
-  /* Hide the default audio controls except progress and time */
-  audio::-webkit-media-controls-panel {
-    background: transparent !important;
-    color: #1e90ff !important;
+  .time {
+    font-size: 14px;
+    color: #63b3ff; /* lighter blue */
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    user-select: none;
+    font-weight: 500;
   }
 
-  audio::-webkit-media-controls-play-button,
-  audio::-webkit-media-controls-volume-slider,
-  audio::-webkit-media-controls-mute-button,
-  audio::-webkit-media-controls-timeline,
-  audio::-webkit-media-controls-current-time-display,
-  audio::-webkit-media-controls-time-remaining-display,
-  audio::-webkit-media-controls-seek-back-button,
-  audio::-webkit-media-controls-seek-forward-button {
-    display: none !important;
-  }
-
-  /* Custom range slider for progress bar */
   input[type=range] {
     -webkit-appearance: none;
     width: 100%;
@@ -156,20 +145,47 @@
     box-shadow: 0 0 12px #63b3ff;
   }
 
-  /* Time display */
-  .time {
-    font-size: 14px;
-    color: #63b3ff; /* lighter blue */
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    user-select: none;
-    font-weight: 500;
-  }
-
   p.footer {
     font-size: 13px;
-    color: #63b3ff; /* matching soft blue */
+    color: #63b3ff;
+    text-shadow: 0 0 5px rgba(0,0,0,0.7);
+  }
+
+  .blue-heart {
+    color: #1e90ff;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Play button overlay on cover */
+  #playButton {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(30, 144, 255, 0.7);
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    box-shadow: 0 0 20px rgba(30,144,255,0.7);
+  }
+
+  #playButton:hover {
+    background: rgba(30, 144, 255, 1);
+  }
+
+  /* Play triangle icon */
+  #playButton:before {
+    content: "";
+    display: inline-block;
+    margin-left: 5px;
+    border-style: solid;
+    border-width: 15px 0 15px 25px;
+    border-color: transparent transparent transparent white;
   }
 
   /* Responsive */
@@ -201,13 +217,16 @@
 </div>
 
 <div class="center">
-  <img src="cover.jpg" alt="Cover" class="cover" />
+  <div class="cover" id="coverContainer" tabindex="0">
+    <img src="cover.jpg" alt="Cover" style="width:100%; border-radius: 20px;" />
+    <div id="playButton"></div>
+  </div>
   <h2>I'll Take Care of You</h2>
   <p class="artist">Tyler, The Creator 💚</p>
 
-  <audio id="audio" autoplay>
+  <audio id="audio">
     <source src="music.mp3" type="audio/mpeg" />
-  
+    Your browser does not support the audio element.
   </audio>
 
   <div class="time">
@@ -217,7 +236,7 @@
 
   <input type="range" id="progress" value="0" min="0" max="100" />
 
-  <p class="footer">To the love of my life 💙</p>
+  <p class="footer">To the love of my life <span class="blue-heart">💙</span></p>
 </div>
 
 <script>
@@ -225,6 +244,8 @@
   const progress = document.getElementById('progress');
   const currentTimeElem = document.getElementById('currentTime');
   const durationElem = document.getElementById('duration');
+  const playButton = document.getElementById('playButton');
+  const coverContainer = document.getElementById('coverContainer');
 
   // Format time in mm:ss
   function formatTime(seconds) {
@@ -247,9 +268,37 @@
     audio.currentTime = progress.value;
   });
 
-  // autoplay is set on audio tag
+  function playAudio() {
+    audio.play().then(() => {
+      // Hide play button once playing
+      playButton.style.display = 'none';
+    }).catch((error) => {
+      console.log("Playback prevented:", error);
+    });
+  }
+
+  // When user clicks the cover or play button, start music
+  playButton.addEventListener('click', playAudio);
+  coverContainer.addEventListener('click', playAudio);
+
+  // Optionally, you can also show the play button on pause
+  audio.addEventListener('pause', () => {
+    playButton.style.display = 'flex';
+  });
+
+  audio.addEventListener('play', () => {
+    playButton.style.display = 'none';
+  });
+
+  // Initially show play button because autoplay with sound is blocked in most browsers
+  playButton.style.display = 'flex';
+
+  // Attempt autoplay (may be blocked)
+  audio.play().catch(() => {
+    // Autoplay failed, user needs to click play button
+    playButton.style.display = 'flex';
+  });
 </script>
 
 </body>
 </html>
-
