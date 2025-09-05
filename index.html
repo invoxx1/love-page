@@ -3,98 +3,71 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>For My Love ❤️</title>
+  <title>I'll Take Care of You 💚</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --primary-color: #ff4d6d;
-      --bg-color: #fff0f5;
-      --heart-color: #ff69b4;
-    }
-
     body {
       margin: 0;
       padding: 0;
-      background: var(--bg-color);
-      font-family: 'Segoe UI', cursive, sans-serif;
+      background-color: #121212;
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
       text-align: center;
-      overflow: hidden;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      color: var(--primary-color);
-      margin: 1.5rem 1rem 0.5rem;
+    .player {
+      background-color: #1db954;
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 300px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
 
-    p {
+    img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      margin: 0.5rem 0 0;
       font-size: 1.2rem;
-      color: #e60073;
-      margin: 0 1rem 1rem;
     }
 
-    .hearts {
-      font-size: 1.5rem;
-      margin-bottom: 2rem;
+    h3 {
+      margin: 0;
+      font-size: 0.9rem;
+      font-weight: normal;
+      color: #222;
     }
 
     audio {
-      display: none;
+      width: 100%;
+      margin-top: 1rem;
     }
 
-    /* Falling hearts */
-    .heart {
-      position: absolute;
-      top: -40px;
-      animation: fall linear infinite;
-      color: var(--heart-color);
-      font-size: 24px;
-      user-select: none;
-      pointer-events: none;
-    }
-
-    @keyframes fall {
-      to {
-        transform: translateY(100vh);
-      }
-    }
-
-    /* Make text responsive */
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 2rem;
-      }
-      p {
-        font-size: 1rem;
-      }
-      .hearts {
-        font-size: 1.2rem;
-      }
+    .note {
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-top: 1rem;
     }
   </style>
 </head>
 <body>
-  <h1>Hey My Love 💖</h1>
-  <p>You are the sunshine in my world and the beat in my heart.</p>
-  <p class="hearts">💗 💞 💕 💓 💖</p>
-
-  <!-- Background music -->
-  <audio autoplay loop>
-    <source src="music.mp3" type="audio/mp3">
-    Your browser does not support the audio element.
-  </audio>
-
-  <!-- Falling hearts -->
-  <script>
-    const numHearts = 25;
-    for (let i = 0; i < numHearts; i++) {
-      const heart = document.createElement('div');
-      heart.className = 'heart';
-      heart.innerText = '💖';
-      heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.animationDuration = (3 + Math.random() * 5) + 's';
-      heart.style.fontSize = (16 + Math.random() * 16) + 'px';
-      document.body.appendChild(heart);
-    }
-  </script>
+  <div class="player">
+    <img src="cover.jpg" alt="Cover Art">
+    <h2>I'll Take Care of You</h2>
+    <h3>Tyler, The Creator (Love Edition 💚)</h3>
+    <audio controls autoplay loop>
+      <source src="music.mp3" type="audio/mp3">
+      Your browser does not support the audio element.
+    </audio>
+    <div class="note">This is our song 💚</div>
+  </div>
 </body>
 </html>
