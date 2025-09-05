@@ -54,7 +54,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: 320px;
-    background: rgba(0, 0, 0, 0.0); /* fully transparent */
+    background: transparent;
     text-align: center;
     color: white;
     font-weight: 600;
@@ -82,15 +82,89 @@
 
   audio {
     width: 100%;
-    border-radius: 12px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
     outline: none;
     cursor: pointer;
-    background: rgba(255 255 255 / 0.2);
-    margin-bottom: 15px;
+    margin-bottom: 10px;
   }
 
-  audio:hover {
-    box-shadow: 0 0 10px rgba(0, 255, 100, 0.8);
+  /* Remove default controls */
+  audio::-webkit-media-controls {
+    display: none !important;
+  }
+
+  /* Custom progress bar */
+  audio::-webkit-media-controls-timeline {
+    display: none !important;
+  }
+
+  /* Firefox */
+  audio::-moz-range-track {
+    background: transparent;
+  }
+
+  /* Custom progress bar style */
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  input[type=range]:focus {
+    outline: none;
+  }
+
+  input[type=range]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: #1db954;
+    border-radius: 2px;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #1db954;
+    border-radius: 50%;
+    margin-top: -4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  input[type=range]:hover::-webkit-slider-thumb {
+    background: #1ed760;
+  }
+
+  /* For Firefox */
+  input[type=range]::-moz-range-track {
+    height: 4px;
+    background: #1db954;
+    border-radius: 2px;
+  }
+
+  input[type=range]::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: #1db954;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  input[type=range]:hover::-moz-range-thumb {
+    background: #1ed760;
+  }
+
+  .time {
+    font-size: 14px;
+    color: #1db954;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    user-select: none;
   }
 
   p.footer {
@@ -130,12 +204,59 @@
   <img src="cover.jpg" alt="Cover" class="cover" />
   <h2>I'll Take Care of You</h2>
   <p class="artist">Tyler, The Creator 💚</p>
-  <audio controls>
+
+  <audio id="audio" autoplay>
     <source src="music.mp3" type="audio/mpeg" />
     Your browser does not support the audio element.
   </audio>
+
+  <!-- Custom controls -->
+  <input type="range" id="seekbar" value="0" min="0" max="100" step="0.1" />
+  <div class="time">
+    <span id="currentTime">0:00</span>
+    <span id="duration">0:00</span>
+  </div>
+
   <p class="footer">To the love of my life 💖</p>
 </div>
+
+<script>
+  const audio = document.getElementById('audio');
+  const seekbar = document.getElementById('seekbar');
+  const currentTimeEl = document.getElementById('currentTime');
+  const durationEl = document.getElementById('duration');
+
+  // Format time (seconds) into m:ss
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return mins + ':' + (secs < 10 ? '0' : '') + secs;
+  }
+
+  // Update duration when metadata is loaded
+  audio.addEventListener('loadedmetadata', () => {
+    seekbar.max = audio.duration;
+    durationEl.textContent = formatTime(audio.duration);
+  });
+
+  // Update progress bar and current time as audio plays
+  audio.addEventListener('timeupdate', () => {
+    seekbar.value = audio.currentTime;
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+  });
+
+  // Seek audio when user changes the range input
+  seekbar.addEventListener('input', () => {
+    audio.currentTime = seekbar.value;
+  });
+
+  // Autoplay on page load (some browsers require interaction to start)
+  window.addEventListener('load', () => {
+    audio.play().catch(() => {
+      // If autoplay blocked, do nothing or show a message
+    });
+  });
+</script>
 
 </body>
 </html>
