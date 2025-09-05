@@ -2,116 +2,133 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Our Love 💚</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    /* Reset and basic styles */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    body {
-      background-color: #000;
-      color: white;
-      font-family: 'Montserrat', sans-serif;
-      height: 100vh;
+    body, html {
+      height: 100%;
+      background: #000;
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
-      background-size: cover;
+    }
+
+    .container {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
       overflow: hidden;
     }
 
     .side-image {
-      width: 35%;
-      height: 100%;
+      flex: 1;
       background-size: cover;
       background-position: center;
+      filter: brightness(0.7);
+      transition: filter 0.3s ease;
     }
 
-    .left {
-      background-image: url('left.jpg');
+    .side-image.left {
+      background-image: url('your-left-image.jpg'); /* Replace with your left image path */
     }
 
-    .right {
-      background-image: url('right.jpg');
+    .side-image.right {
+      background-image: url('your-right-image.jpg'); /* Replace with your right image path */
+    }
+
+    .side-image:hover {
+      filter: brightness(0.85);
     }
 
     .player-container {
-      width: 30%;
-      background: rgba(0, 0, 0, 0.4);
+      flex: 0 0 30%;
+      background: rgba(255, 255, 255, 0.1);
       border-radius: 20px;
-      padding: 1.5rem;
+      padding: 2rem 1.5rem;
       text-align: center;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       transition: background 0.3s ease, box-shadow 0.3s ease;
     }
 
     .player-container:hover {
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(255, 255, 255, 0.2);
       box-shadow: 0 0 15px rgba(30, 215, 96, 0.5);
     }
 
-    .player-container img {
-      width: 100%;
-      border-radius: 15px;
+    .album-cover {
+      width: 250px;
+      height: 250px;
+      border-radius: 20px;
       margin-bottom: 1rem;
+      object-fit: cover;
+      box-shadow: 0 0 20px rgba(30, 215, 96, 0.5);
     }
 
     h2 {
-      font-size: 1.3rem;
-      margin: 0.5rem 0;
+      margin-bottom: 0.3rem;
+      font-weight: 700;
+      font-size: 1.5rem;
     }
 
-    h3 {
-      font-size: 0.9rem;
-      color: #ccc;
-      margin-bottom: 1rem;
+    p.artist {
+      font-weight: 600;
+      color: #1db954;
+      margin-bottom: 1.2rem;
     }
 
     audio {
       width: 100%;
+      margin-bottom: 1.5rem;
+      border-radius: 10px;
+      outline: none;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.2);
     }
 
-    .note {
-      margin-top: 1rem;
-      font-size: 0.8rem;
-      color: #ccc;
+    .footer-text {
+      font-size: 0.85rem;
+      color: #ddd;
     }
 
-    /* Mobile responsive */
-    @media (max-width: 768px) {
-      body {
-        flex-direction: column;
-        justify-content: center;
-      }
-
-      .side-image {
-        display: none;
-      }
-
-      .player-container {
-        width: 90%;
-        margin: 2rem auto;
-      }
+    .footer-text span {
+      margin-left: 0.3rem;
+      font-size: 1.2rem;
     }
+
   </style>
 </head>
 <body>
-  <div class="side-image left"></div>
-
-  <div class="player-container">
-    <img src="cover.jpg" alt="Our Love">
-    <h2>I'll Take Care of You</h2>
-    <h3>Tyler, The Creator 💚</h3>
-    <audio controls>
-      <source src="music.mp3" type="audio/mp3">
-      Your browser does not support the audio element.
-    </audio>
-    <div class="note">To the love of my life 💖</div>
+  <div class="container">
+    <div class="side-image left"></div>
+    <div class="player-container">
+      <img
+        src="https://i.scdn.co/image/ab67616d0000b27398cb2edc60eae3e6d507a11f"
+        alt="Album Cover"
+        class="album-cover"
+      />
+      <h2>I'll Take Care of You</h2>
+      <p class="artist">Tyler, The Creator 💚</p>
+      <audio controls>
+        <source src="music.mp3" type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
+      <div class="footer-text">To the love of my life <span>💖</span></div>
+    </div>
+    <div class="side-image right"></div>
   </div>
-
-  <div class="side-image right"></div>
 </body>
 </html>
