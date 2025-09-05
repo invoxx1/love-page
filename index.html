@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Our Love 💚</title>
+<title>Minamahal ko 💙</title>
 <style>
   /* Reset */
   * {
@@ -54,7 +54,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: 320px;
-    background: rgba(0, 0, 0, 0); /* fully transparent */
+    background: rgba(0, 0, 0, 0); 
     text-align: center;
     color: white;
     font-weight: 600;
@@ -64,7 +64,7 @@
   .cover {
     width: 320px;
     border-radius: 20px;
-    box-shadow: 0 0 20px rgba(30, 144, 255, 0.6); /* blue glow */
+    box-shadow: 0 0 20px rgba(30, 144, 255, 0.6); 
     margin-bottom: 1rem;
     position: relative;
     cursor: pointer;
@@ -79,16 +79,16 @@
     margin: 0 0 20px 0;
     font-weight: 400;
     font-size: 16px;
-    color: #1e90ff; /* Dodger Blue */
+    color: #1e90ff;
   }
 
   audio {
-    display: none; /* hide native controls, we have custom player */
+    display: none; 
   }
 
   .time {
     font-size: 14px;
-    color: #63b3ff; /* lighter blue */
+    color: #63b3ff; 
     display: flex;
     justify-content: space-between;
     margin-bottom: 15px;
@@ -290,15 +290,15 @@
     playButton.style.display = 'none';
   });
 
-  // Initially show play button because autoplay with sound is blocked in most browsers
+  
   playButton.style.display = 'flex';
 
-  // Attempt autoplay (may be blocked)
   audio.play().catch(() => {
-    // Autoplay failed, user needs to click play button
+ 
     playButton.style.display = 'flex';
   });
 </script>
 
 </body>
 </html>
+
