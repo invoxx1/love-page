@@ -5,8 +5,309 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Minamahal ko 💙</title>
 <style>
-  /* (Styles remain unchanged — omitted here for brevity) */
-  /* You can keep your existing <style> block here — no changes needed */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body, html {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .side {
+    width: 50vw;
+    height: 100vh;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: brightness(0.75);
+    transition: filter 0.3s ease;
+  }
+
+  .side.left {
+    background-image: url('left.jpg');
+  }
+
+  .side.right {
+    background-image: url('right.jpg');
+  }
+
+  .side:hover {
+    filter: brightness(0.9);
+  }
+
+  .center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    background: rgba(0, 0, 0, 0);
+    text-align: center;
+    color: white;
+    font-weight: 600;
+    user-select: none;
+  }
+
+  .cover {
+    width: 320px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(30, 144, 255, 0.6);
+    margin-bottom: 1rem;
+    position: relative;
+    cursor: pointer;
+    overflow: visible;
+  }
+
+  h2 {
+    margin: 0 0 5px 0;
+    font-size: 22px;
+  }
+
+  p.artist {
+    margin: 0 0 20px 0;
+    font-weight: 400;
+    font-size: 16px;
+    color: #1e90ff;
+  }
+
+  audio {
+    display: none;
+  }
+
+  .time {
+    font-size: 14px;
+    color: #63b3ff;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    user-select: none;
+    font-weight: 500;
+  }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    background: #1e90ff;
+    border-radius: 3px;
+    box-shadow: 0 0 10px #1e90ff;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  input[type=range]:hover {
+    background: #63b3ff;
+    box-shadow: 0 0 15px #63b3ff;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #1e90ff;
+    box-shadow: 0 0 14px #1e90ff;
+    border-radius: 50%;
+    margin-top: -5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  input[type=range]:hover::-webkit-slider-thumb {
+    background: #63b3ff;
+    box-shadow: 0 0 18px #63b3ff;
+  }
+
+  input[type=range]::-moz-range-track {
+    height: 6px;
+    background: #1e90ff;
+    border-radius: 3px;
+    box-shadow: 0 0 10px #1e90ff;
+  }
+
+  input[type=range]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: #1e90ff;
+    box-shadow: 0 0 14px #1e90ff;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  input[type=range]:hover::-moz-range-thumb {
+    background: #63b3ff;
+    box-shadow: 0 0 18px #63b3ff;
+  }
+
+  p.footer {
+    font-size: 13px;
+    color: #63b3ff;
+    text-shadow: 0 0 5px rgba(0,0,0,0.7);
+    margin-top: 15px;
+  }
+
+  .blue-heart {
+    color: #1e90ff;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Play button overlay on cover */
+  #playButton {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(30, 144, 255, 0.7);
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    box-shadow: 0 0 20px rgba(30,144,255,0.7);
+    animation: pulse 2s infinite;
+    z-index: 2;
+  }
+
+  #playButton:hover {
+    background: rgba(30, 144, 255, 1);
+    box-shadow: 0 0 30px rgba(30,144,255,1);
+  }
+
+  #playButton:before {
+    content: "";
+    display: inline-block;
+    margin-left: 5px;
+    border-style: solid;
+    border-width: 15px 0 15px 25px;
+    border-color: transparent transparent transparent white;
+  }
+
+  #switchBtn {
+    margin-top: 10px;
+    background: transparent;
+    border: 2px solid #1e90ff;
+    color: #1e90ff;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  #switchBtn:hover {
+    background: #1e90ff;
+    color: #000;
+  }
+
+  /* Next and Prev buttons */
+  #prevBtn, #nextBtn {
+    margin: 10px 10px 0 10px;
+    background: transparent;
+    border: 2px solid #1e90ff;
+    color: #1e90ff;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  #prevBtn:hover, #nextBtn:hover {
+    background: #1e90ff;
+    color: #000;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  /* Floating hearts container */
+  #heartsContainer {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 10;
+  }
+
+  /* Floating heart style */
+  .heart {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: url('https://i.postimg.cc/2yHZ0yN0/blue-heart.png') no-repeat center center / contain;
+    opacity: 1;
+    animation: floatUp 2.5s forwards;
+    user-select: none;
+  }
+
+  @keyframes floatUp {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-150px) scale(1.5);
+      opacity: 0;
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(30,144,255,0.7);
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(30,144,255,1);
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+  }
+
+  @media (max-width: 700px) {
+    .container {
+      flex-direction: column;
+    }
+    .side {
+      width: 100vw;
+      height: 30vh;
+    }
+    .center {
+      position: static;
+      transform: none;
+      width: 90vw;
+      margin: 20px auto;
+    }
+    .cover {
+      width: 100%;
+    }
+    .controls {
+      flex-wrap: wrap;
+    }
+  }
 </style>
 </head>
 <body>
@@ -19,13 +320,14 @@
 <div class="center">
   <div class="cover" id="coverContainer" tabindex="0">
     <img src="cover.jpg" alt="Cover" style="width:100%; border-radius: 20px;" id="coverImage" />
-    <div id="playButton"></div>
+    <div id="playButton" aria-label="Play button" role="button" tabindex="0"></div>
+    <div id="heartsContainer"></div>
   </div>
   <h2 id="songTitle">I'll Take Care of You</h2>
   <p class="artist" id="artistName">Tyler, The Creator 💙</p>
 
-  <audio id="audio">
-    <source src="" type="audio/mpeg" />
+  <audio id="audio" preload="metadata">
+    <source src="music.mp3" type="audio/mpeg" />
     Your browser does not support the audio element.
   </audio>
 
@@ -36,7 +338,13 @@
 
   <input type="range" id="progress" value="0" min="0" max="100" />
 
-  <button id="switchBtn">Pag-Ibig ay Kanibalismo II<br><small style="font-weight: normal;">by fitterkarma</small></button>
+  <div class="controls">
+    <button id="prevBtn" aria-label="Previous song">⏮ Prev</button>
+    <button id="switchBtn" aria-label="Switch song">
+      Pag-Ibig ay Kanibalismo II<br><small style="font-weight: normal;">by fitterkarma</small>
+    </button>
+    <button id="nextBtn" aria-label="Next song">Next ⏭</button>
+  </div>
 
   <p class="footer">To the love of my life <span class="blue-heart">💙</span></p>
 </div>
@@ -52,6 +360,9 @@
   const songTitle = document.getElementById('songTitle');
   const artistName = document.getElementById('artistName');
   const switchBtn = document.getElementById('switchBtn');
+  const heartsContainer = document.getElementById('heartsContainer');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
 
   // Songs data
   const songs = {
@@ -96,18 +407,17 @@
     const elem = document.documentElement;
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) {
+    } else if (elem.webkitRequestFullscreen) { // Safari
       elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) {
+    } else if (elem.msRequestFullscreen) { // IE11
       elem.msRequestFullscreen();
     }
   }
 
   function playAudio() {
-    requestFullscreen();
-
-    if (audio.readyState < 2) {
-      audio.load(); // Ensure metadata is loaded
+    // Request fullscreen after user interaction, only if not already in fullscreen
+    if (!document.fullscreenElement) {
+      requestFullscreen();
     }
 
     audio.play().then(() => {
@@ -117,10 +427,51 @@
     });
   }
 
-  // Click handlers
-  playButton.addEventListener('click', playAudio);
-  coverContainer.addEventListener('click', playAudio);
+  // Floating hearts animation
+  function createHeart(x, y) {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.style.left = `${x}px`;
+    heart.style.top = `${y}px`;
+    heartsContainer.appendChild(heart);
 
+    setTimeout(() => {
+      heart.remove();
+    }, 2500);
+  }
+
+  // Add hearts on click
+  function addHeartsOnClick(event) {
+    // Position relative to heartsContainer (cover image)
+    const rect = heartsContainer.getBoundingClientRect();
+    const x = event.clientX - rect.left - 12; // center heart (24px / 2)
+    const y = event.clientY - rect.top - 12;
+    createHeart(x, y);
+  }
+
+  // Click handlers
+  playButton.addEventListener('click', (e) => {
+    playAudio();
+    addHeartsOnClick(e);
+  });
+
+  coverContainer.addEventListener('click', (e) => {
+    if (audio.paused) {
+      playAudio();
+    }
+    addHeartsOnClick(e);
+  });
+
+  // Keyboard accessibility for play button (Enter and Space)
+  playButton.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      playAudio();
+      addHeartsOnClick(e);
+    }
+  });
+
+  // Show/hide play button based on audio state
   audio.addEventListener('pause', () => {
     playButton.style.display = 'flex';
   });
@@ -129,6 +480,7 @@
     playButton.style.display = 'none';
   });
 
+  // Switch song button logic and dynamic button label update
   function updateSwitchButton() {
     const otherTrack = currentTrack === 1 ? 2 : 1;
     const song = songs[otherTrack];
@@ -136,9 +488,22 @@
   }
 
   switchBtn.addEventListener('click', () => {
-    currentTrack = currentTrack === 1 ? 2 : 1;
-    const song = songs[currentTrack];
+    switchTrack(currentTrack === 1 ? 2 : 1);
+  });
 
+  prevBtn.addEventListener('click', () => {
+    switchTrack(currentTrack === 1 ? 2 : 1);
+  });
+
+  nextBtn.addEventListener('click', () => {
+    switchTrack(currentTrack === 1 ? 2 : 1);
+  });
+
+  function switchTrack(trackNumber) {
+    if (trackNumber === currentTrack) return;
+
+    currentTrack = trackNumber;
+    const song = songs[currentTrack];
     audio.pause();
     audio.querySelector('source').src = song.src;
     audio.load();
@@ -151,16 +516,10 @@
     audio.play().catch(() => {
       playButton.style.display = 'flex';
     });
-  });
+  }
 
-  // Set up initial track
+  // Initial button label
   updateSwitchButton();
-  const initialSong = songs[currentTrack];
-  audio.querySelector('source').src = initialSong.src;
-  audio.load(); // Load the initial song
-  coverImage.src = initialSong.cover;
-  songTitle.textContent = initialSong.title;
-  artistName.textContent = initialSong.artist;
 
   // Show play button initially
   playButton.style.display = 'flex';
