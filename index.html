@@ -5,293 +5,373 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Minamahal ko 💙</title>
 <style>
-  /* Reset and base */
   * {
-    margin: 0; padding: 0; box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
+
   body, html {
-    height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: white; background: url('your-background.jpg') center/cover no-repeat; /* Put your background here */
-    display: flex; justify-content: center; align-items: center;
-    overflow: hidden;
-  }
-  
-  /* Player container */
-  .player {
-    width: 320px;
-    background: rgba(0, 0, 0, 0.3); /* Transparent black overlay */
-    border-radius: 20px;
-    box-shadow: 0 0 30px rgba(30, 144, 255, 0.7);
-    padding: 1rem;
-    text-align: center;
-    user-select: none;
-    backdrop-filter: blur(8px);
-  }
-  
-  /* Cover image with play overlay */
-  .cover-container {
-    position: relative;
-    width: 320px;
-    height: 320px;
-    margin: 0 auto 1rem auto;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 0 20px rgba(30,144,255,0.7);
-    cursor: pointer;
-  }
-  
-  .cover-container img {
-    width: 100%;
     height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-    border-radius: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    overflow: hidden;
+    background: #000;
   }
-  .cover-container:hover img {
-    transform: scale(1.05);
+
+  .container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
   }
-  
-  /* Play button overlay */
-  .play-button {
-    position: absolute;
-    top: 50%; left: 50%;
+
+  .side {
+    width: 50vw;
+    height: 100vh;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: brightness(0.75);
+    transition: filter 0.3s ease;
+  }
+
+  .side.left {
+    background-image: url('left.jpg');
+  }
+
+  .side.right {
+    background-image: url('right.jpg');
+  }
+
+  .side:hover {
+    filter: brightness(0.9);
+  }
+
+  .center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(30,144,255,0.7);
-    width: 80px; height: 80px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 30px rgba(30,144,255,0.7);
-    transition: background 0.3s ease;
+    width: 320px;
+    background: rgba(0, 0, 0, 0);
+    text-align: center;
+    color: white;
+    font-weight: 600;
+    user-select: none;
   }
-  .play-button:hover {
-    background: rgba(30,144,255,1);
-  }
-  .play-button:before {
-    content: "";
-    display: inline-block;
-    margin-left: 5px;
-    border-style: solid;
-    border-width: 20px 0 20px 30px;
-    border-color: transparent transparent transparent white;
-  }
-  
-  /* Song title & artist */
-  h2 {
-    font-size: 24px;
-    margin-bottom: 0.25rem;
-    font-weight: 700;
-    text-shadow: 0 0 5px rgba(30, 144, 255, 0.9);
-  }
-  p.artist {
-    font-weight: 500;
-    font-size: 16px;
-    color: #63b3ff;
-    text-shadow: 0 0 3px rgba(0,0,0,0.8);
+
+  .cover {
+    width: 320px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(30, 144, 255, 0.6);
     margin-bottom: 1rem;
-  }
-  
-  /* Progress bar styling */
-  input[type="range"] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 5px;
-    background: rgba(30,144,255,0.4);
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(30,144,255,0.7);
+    position: relative;
     cursor: pointer;
-    outline: none;
-    margin-bottom: 0.5rem;
   }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 14px;
-    height: 14px;
-    background: #1e90ff;
-    cursor: pointer;
-    border-radius: 50%;
-    box-shadow: 0 0 10px #1e90ff;
-    transition: background 0.3s ease;
+
+  h2 {
+    margin: 0 0 5px 0;
+    font-size: 22px;
   }
-  input[type="range"]:hover::-webkit-slider-thumb {
-    background: #63b3ff;
-    box-shadow: 0 0 15px #63b3ff;
+
+  p.artist {
+    margin: 0 0 20px 0;
+    font-weight: 400;
+    font-size: 16px;
+    color: #1e90ff;
   }
-  input[type="range"]::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
-    background: #1e90ff;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 10px #1e90ff;
-    transition: background 0.3s ease;
+
+  audio {
+    display: none;
   }
-  input[type="range"]:hover::-moz-range-thumb {
-    background: #63b3ff;
-    box-shadow: 0 0 15px #63b3ff;
-  }
-  
-  /* Time display */
+
   .time {
     font-size: 14px;
     color: #63b3ff;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
-    font-weight: 600;
-    text-shadow: 0 0 4px rgba(0,0,0,0.7);
+    margin-bottom: 15px;
+    user-select: none;
+    font-weight: 500;
   }
-  
+
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: #1e90ff;
+    border-radius: 2px;
+    box-shadow: 0 0 8px #1e90ff;
+    cursor: pointer;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #1e90ff;
+    box-shadow: 0 0 10px #1e90ff;
+    border-radius: 50%;
+    margin-top: -4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  input[type=range]:hover::-webkit-slider-thumb {
+    background: #63b3ff;
+    box-shadow: 0 0 12px #63b3ff;
+  }
+
+  input[type=range]::-moz-range-track {
+    height: 4px;
+    background: #1e90ff;
+    border-radius: 2px;
+    box-shadow: 0 0 8px #1e90ff;
+  }
+
+  input[type=range]::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: #1e90ff;
+    box-shadow: 0 0 10px #1e90ff;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  input[type=range]:hover::-moz-range-thumb {
+    background: #63b3ff;
+    box-shadow: 0 0 12px #63b3ff;
+  }
+
+  p.footer {
+    font-size: 13px;
+    color: #63b3ff;
+    text-shadow: 0 0 5px rgba(0,0,0,0.7);
+  }
+
+  .blue-heart {
+    color: #1e90ff;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Play button overlay on cover */
+  #playButton {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(30, 144, 255, 0.7);
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    box-shadow: 0 0 20px rgba(30,144,255,0.7);
+  }
+
+  #playButton:hover {
+    background: rgba(30, 144, 255, 1);
+  }
+
+  #playButton:before {
+    content: "";
+    display: inline-block;
+    margin-left: 5px;
+    border-style: solid;
+    border-width: 15px 0 15px 25px;
+    border-color: transparent transparent transparent white;
+  }
+
+  #switchBtn {
+    margin-top: 10px;
+    background: transparent;
+    border: 2px solid #1e90ff;
+    color: #1e90ff;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  #switchBtn:hover {
+    background: #1e90ff;
+    color: #000;
+  }
+
+  @media (max-width: 700px) {
+    .container {
+      flex-direction: column;
+    }
+    .side {
+      width: 100vw;
+      height: 30vh;
+    }
+    .center {
+      position: static;
+      transform: none;
+      width: 90vw;
+      margin: 20px auto;
+    }
+    .cover {
+      width: 100%;
+    }
+  }
 </style>
 </head>
 <body>
 
-<div class="player">
-  <div class="cover-container" tabindex="0" role="button" aria-label="Play/pause">
-    <img id="coverImage" src="https://img.youtube.com/vi/dP8KjU924UY/hqdefault.jpg" alt="Cover Art" />
-    <div class="play-button" id="playBtn"></div>
+<div class="container">
+  <div class="side left"></div>
+  <div class="side right"></div>
+</div>
+
+<div class="center">
+  <div class="cover" id="coverContainer" tabindex="0">
+    <img src="cover.jpg" alt="Cover" style="width:100%; border-radius: 20px;" id="coverImage" />
+    <div id="playButton"></div>
   </div>
-  
-  <h2 id="songTitle">Loading...</h2>
-  <p class="artist" id="artistName">Please wait</p>
-  
+  <h2 id="songTitle">I'll Take Care of You</h2>
+  <p class="artist" id="artistName">Tyler, The Creator 💙</p>
+
+  <audio id="audio">
+    <source src="music.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
+
   <div class="time">
     <span id="currentTime">0:00</span>
     <span id="duration">0:00</span>
   </div>
+
   <input type="range" id="progress" value="0" min="0" max="100" />
-  
-  <!-- Hidden YouTube iframe for audio -->
-  <div id="player" style="display:none;"></div>
+
+  <button id="switchBtn">Pag-Ibig ay Kanibalismo II<br><small style="font-weight: normal;">by fitterkarma</small></button>
+
+  <p class="footer">To the love of my life <span class="blue-heart">💙</span></p>
 </div>
 
 <script>
-  const API_KEY = 'AIzaSyA38lWs0GwvIGJW3yJLlsiv3Yxhqs0CsVw'; // Your YouTube API Key
-  const VIDEO_ID = 'dP8KjU924UY'; // Default video ID - you can make this dynamic via search
-
-  const coverImage = document.getElementById('coverImage');
-  const songTitle = document.getElementById('songTitle');
-  const artistName = document.getElementById('artistName');
-  const playBtn = document.getElementById('playBtn');
+  const audio = document.getElementById('audio');
   const progress = document.getElementById('progress');
   const currentTimeElem = document.getElementById('currentTime');
   const durationElem = document.getElementById('duration');
+  const playButton = document.getElementById('playButton');
+  const coverContainer = document.getElementById('coverContainer');
+  const coverImage = document.getElementById('coverImage');
+  const songTitle = document.getElementById('songTitle');
+  const artistName = document.getElementById('artistName');
+  const switchBtn = document.getElementById('switchBtn');
 
-  let player;
-  let isPlaying = false;
-
-  // Load YouTube Iframe API script dynamically
-  function loadYouTubeAPI() {
-    return new Promise(resolve => {
-      const tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
-      document.body.appendChild(tag);
-      window.onYouTubeIframeAPIReady = () => resolve();
-    });
-  }
-
-  // Initialize YouTube player
-  function createPlayer(videoId) {
-    player = new YT.Player('player', {
-      videoId: videoId,
-      playerVars: {
-        'controls': 0,
-        'showinfo': 0,
-        'modestbranding': 1,
-        'rel': 0,
-        'autoplay': 0,
-        'loop': 0,
-        'fs': 0,
-        'cc_load_policy': 0,
-        'iv_load_policy': 3,
-        'disablekb': 1,
-        'playsinline': 1,
-      },
-      events: {
-        'onReady': onPlayerReady,
-        'onStateChange': onPlayerStateChange,
-      }
-    });
-  }
-
-  function onPlayerReady(event) {
-    const duration = player.getDuration();
-    durationElem.textContent = formatTime(duration);
-    progress.max = Math.floor(duration);
-  }
-
-  function onPlayerStateChange(event) {
-    if (event.data == YT.PlayerState.PLAYING) {
-      isPlaying = true;
-      playBtn.style.display = 'none';
-      updateProgress();
-    } else {
-      isPlaying = false;
-      playBtn.style.display = 'flex';
+  // Songs data
+  const songs = {
+    1: {
+      title: "I'll Take Care of You",
+      artist: "Tyler, The Creator 💙",
+      src: "music.mp3",
+      cover: "cover.jpg"
+    },
+    2: {
+      title: "Pag-Ibig ay Kanibalismo II",
+      artist: "fitterkarma",
+      src: "music2.mp3",
+      cover: "cover2.jpg"
     }
-  }
+  };
 
-  // Format seconds as mm:ss
+  let currentTrack = 1;
+
+  // Format time in mm:ss
   function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return mins + ':' + (secs < 10 ? '0' : '') + secs;
   }
 
-  // Update progress slider and current time
-  function updateProgress() {
-    if (!isPlaying) return;
-    const currentTime = player.getCurrentTime();
-    progress.value = Math.floor(currentTime);
-    currentTimeElem.textContent = formatTime(currentTime);
-    requestAnimationFrame(updateProgress);
-  }
-
-  // Fetch video info from YouTube API
-  async function fetchVideoInfo(videoId) {
-    const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${API_KEY}`;
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (data.items && data.items.length > 0) {
-      const snippet = data.items[0].snippet;
-      songTitle.textContent = snippet.title;
-      artistName.textContent = snippet.channelTitle;
-      coverImage.src = snippet.thumbnails.high.url;
-      coverImage.alt = snippet.title + ' cover art';
-    }
-  }
-
-  // Play or pause toggle
-  function togglePlay() {
-    if (!player) return;
-    if (isPlaying) {
-      player.pauseVideo();
-    } else {
-      player.playVideo();
-    }
-  }
-
-  // User drags progress bar
-  progress.addEventListener('input', () => {
-    if (player) {
-      player.seekTo(progress.value, true);
-      currentTimeElem.textContent = formatTime(progress.value);
-    }
+  audio.addEventListener('loadedmetadata', () => {
+    durationElem.textContent = formatTime(audio.duration);
+    progress.max = Math.floor(audio.duration);
   });
 
-  // Play button or cover click toggles play
-  playBtn.addEventListener('click', togglePlay);
-  document.querySelector('.cover-container').addEventListener('click', togglePlay);
+  audio.addEventListener('timeupdate', () => {
+    progress.value = Math.floor(audio.currentTime);
+    currentTimeElem.textContent = formatTime(audio.currentTime);
+  });
 
-  // Initialize everything
-  async function init() {
-    await loadYouTubeAPI();
-    createPlayer(VIDEO_ID);
-    await fetchVideoInfo(VIDEO_ID);
+  progress.addEventListener('input', () => {
+    audio.currentTime = progress.value;
+  });
+
+  function requestFullscreen() {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { // Safari
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { // IE11
+      elem.msRequestFullscreen();
+    }
   }
 
-  init();
+  function playAudio() {
+    requestFullscreen(); // Request fullscreen after user interaction
+
+    audio.play().then(() => {
+      playButton.style.display = 'none';
+    }).catch((error) => {
+      console.log("Playback prevented:", error);
+    });
+  }
+
+  // Click handlers
+  playButton.addEventListener('click', playAudio);
+  coverContainer.addEventListener('click', playAudio);
+
+  // Show/hide play button based on audio state
+  audio.addEventListener('pause', () => {
+    playButton.style.display = 'flex';
+  });
+
+  audio.addEventListener('play', () => {
+    playButton.style.display = 'none';
+  });
+
+  // Switch song button logic and dynamic button label update
+  function updateSwitchButton() {
+    const otherTrack = currentTrack === 1 ? 2 : 1;
+    const song = songs[otherTrack];
+    switchBtn.innerHTML = `${song.title}<br><small style="font-weight: normal;">by ${song.artist}</small>`;
+  }
+
+  switchBtn.addEventListener('click', () => {
+    currentTrack = currentTrack === 1 ? 2 : 1;
+
+    const song = songs[currentTrack];
+    audio.pause();
+    audio.querySelector('source').src = song.src;
+    audio.load();
+    coverImage.src = song.cover;
+    songTitle.textContent = song.title;
+    artistName.textContent = song.artist;
+
+    updateSwitchButton();
+
+    audio.play().catch(() => {
+      playButton.style.display = 'flex';
+    });
+  });
+
+  // Initial button label
+  updateSwitchButton();
+
+  // Show play button initially
+  playButton.style.display = 'flex';
 </script>
 
 </body>
