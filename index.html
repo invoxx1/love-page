@@ -35,16 +35,45 @@
     transition: filter 0.3s ease;
   }
 
+  /* Animate left background */
   .side.left {
     background-image: url('left.jpg');
+    animation: moveLeftBg 30s linear infinite;
   }
 
+  /* Animate right background */
   .side.right {
     background-image: url('right.jpg');
+    animation: moveRightBg 30s linear infinite;
   }
 
   .side:hover {
     filter: brightness(0.9);
+  }
+
+  /* Keyframes for background movement */
+  @keyframes moveLeftBg {
+    0% {
+      background-position: center top;
+    }
+    50% {
+      background-position: center bottom;
+    }
+    100% {
+      background-position: center top;
+    }
+  }
+
+  @keyframes moveRightBg {
+    0% {
+      background-position: center bottom;
+    }
+    50% {
+      background-position: center top;
+    }
+    100% {
+      background-position: center bottom;
+    }
   }
 
   .center {
@@ -285,14 +314,26 @@
     }
   };
 
-  let currentTrack = 1;
-  let fullscreenRequested = false;
+  // Start with track 2 loaded (music 2 plays only)
+  let currentTrack = 2;
 
   // Format time in mm:ss
   function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return mins + ':' + (secs < 10 ? '0' : '') + secs;
+  }
+
+  // Load current track data to audio and UI
+  function loadTrack(trackNumber) {
+    const song = songs[trackNumber];
+    audio.pause();
+    audio.querySelector('source').src = song.src;
+    audio.load();
+    coverImage.src = song.cover;
+    songTitle.textContent = song.title;
+    artistName.textContent = song.artist;
+    updateSwitchButton();
   }
 
   audio.addEventListener('loadedmetadata', () => {
@@ -309,24 +350,8 @@
     audio.currentTime = progress.value;
   });
 
-  function requestFullscreen() {
-    if (fullscreenRequested) return; // Only request once per page load
-
-    const elem = document.documentElement;
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) {
-      elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      elem.msRequestFullscreen();
-    }
-    fullscreenRequested = true;
-  }
-
+  // Play audio and hide play button
   function playAudio() {
-    // Request fullscreen only once on first user interaction
-    if (!fullscreenRequested) requestFullscreen();
-
     audio.play().then(() => {
       playButton.style.display = 'none';
     }).catch((error) => {
@@ -335,50 +360,50 @@
     });
   }
 
-  // Click handlers
-  playButton.addEventListener('click', playAudio);
-  coverContainer.addEventListener('click', playAudio);
+  // Toggle play/pause on cover or play button click
+  playButton.addEventListener('click', () => {
+    if (audio.paused) {
+      playAudio();
+    } else {
+      audio.pause();
+    }
+  });
 
-  // Show/hide play button based on audio state
+  coverContainer.addEventListener('click', () => {
+    if (audio.paused) {
+      playAudio();
+    } else {
+      audio.pause();
+    }
+  });
+
+  // Show play button when paused
   audio.addEventListener('pause', () => {
     playButton.style.display = 'flex';
   });
 
+  // Hide play button when playing
   audio.addEventListener('play', () => {
     playButton.style.display = 'none';
   });
 
-  // Switch song button logic and dynamic button label update
+  // Update switch button label to the other song
   function updateSwitchButton() {
     const otherTrack = currentTrack === 1 ? 2 : 1;
     const song = songs[otherTrack];
     switchBtn.innerHTML = `${song.title}<br><small style="font-weight: normal;">by ${song.artist}</small>`;
   }
 
+  // Switch track on button click
   switchBtn.addEventListener('click', () => {
     currentTrack = currentTrack === 1 ? 2 : 1;
-
-    const song = songs[currentTrack];
-    audio.pause();
-    audio.querySelector('source').src = song.src;
-    audio.load();
-    coverImage.src = song.cover;
-    songTitle.textContent = song.title;
-    artistName.textContent = song.artist;
-
-    updateSwitchButton();
-
-    audio.play().catch((err) => {
-      console.error("Playback error after switching track:", err);
-      playButton.style.display = 'flex';
-    });
+    loadTrack(currentTrack);
+    playAudio();
   });
 
-  // Initial button label
-  updateSwitchButton();
+  // Load initial track (track 2 only)
+  loadTrack(currentTrack);
 
-  // Show play button initially
-  playButton.style.display = 'flex';
 </script>
 
 </body>
