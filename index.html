@@ -5,93 +5,273 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Minamahal ko 💙</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body, html { height: 100%; font-family: 'Segoe UI', sans-serif; background: #000; color: white; overflow: hidden; }
-
-  .container { display: flex; height: 100vh; width: 100vw; }
-  .side { width: 50vw; height: 100vh; }
-
-  .center { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 320px; text-align: center; color: white; z-index: 10; }
-  .cover { width: 320px; border-radius: 20px; overflow: hidden; margin-bottom: 1rem; position: relative; }
-  .cover img { width: 100%; border-radius: 20px; }
-
-  #playButton { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(30,144,255,0.7); border-radius: 50%; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-  #playButton:before { content: ""; border-style: solid; border-width: 15px 0 15px 25px; border-color: transparent transparent transparent white; margin-left: 5px; }
-
-  h2 { margin: 0 0 5px 0; font-size: 22px; }
-  p.artist { margin: 0 0 20px 0; font-size: 16px; color: #1e90ff; }
-
-  .time { font-size: 14px; color: #63b3ff; display: flex; justify-content: space-between; margin-bottom: 10px; }
-
-  .progress-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
-  input[type=range] { -webkit-appearance: none; width: 100%; height: 4px; background: #1e90ff; border-radius: 2px; cursor: pointer; }
-  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: #fff; border-radius: 50%; cursor: pointer; }
-
-  /* Bunny Pixel (CSS box-shadows) */
-  .bunny, .cat { width: 1px; height: 1px; }
-  .bunny {
-    box-shadow:
-      1px 0 #fff, 2px 0 #fff, 3px 0 #fff,
-      0 1px #fff, 1px 1px pink, 2px 1px pink, 3px 1px #fff, 4px 1px #fff,
-      1px 2px pink, 2px 2px pink, 3px 2px pink,
-      1px 3px pink, 2px 3px #fff, 3px 3px pink;
-    transform: scale(8);
-    transform-origin: top left;
-    image-rendering: pixelated;
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 
-  /* Cat Pixel */
-  .cat {
-    box-shadow:
-      1px 0 #aaa, 2px 0 #aaa, 3px 0 #aaa,
-      0 1px #aaa, 1px 1px #fff, 2px 1px #fff, 3px 1px #aaa, 4px 1px #aaa,
-      1px 2px #fff, 2px 2px #fff, 3px 2px #fff,
-      1px 3px #aaa, 2px 3px #fff, 3px 3px #aaa;
-    transform: scale(8);
-    transform-origin: top left;
-    image-rendering: pixelated;
+  body, html {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    overflow: hidden;
+    background: #000;
   }
 
-  .animate-bunny { animation: hop 1s infinite alternate; }
-  .animate-cat { animation: wiggle 1s infinite alternate; }
-
-  @keyframes hop {
-    from { transform: scale(8) translateY(0); }
-    to   { transform: scale(8) translateY(-2px); }
+  .container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
   }
 
-  @keyframes wiggle {
-    from { transform: scale(8) rotate(0deg); }
-    to   { transform: scale(8) rotate(5deg); }
+  .side {
+    width: 50vw;
+    height: 100vh;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: brightness(0.75);
+    transition: filter 0.3s ease;
   }
 
-  #switchBtn { margin-top: 10px; background: transparent; border: 2px solid #1e90ff; color: #1e90ff; padding: 10px 15px; font-size: 14px; font-weight: 600; border-radius: 20px; cursor: pointer; }
-  #switchBtn:hover { background: #1e90ff; color: #000; }
+  /* Animate left background */
+  .side.left {
+    background-image: url('left.jpg');
+    animation: moveLeftBg 30s linear infinite;
+  }
 
-  .footer { font-size: 13px; color: #63b3ff; margin-top: 10px; }
-  .blue-heart { color: #1e90ff; }
+  /* Animate right background */
+  .side.right {
+    background-image: url('right.jpg');
+    animation: moveRightBg 30s linear infinite;
+  }
 
-  #bg-blur { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; filter: blur(40px) brightness(0.4); z-index: 0; }
+  .side:hover {
+    filter: brightness(0.9);
+  }
+
+  /* Keyframes for background movement */
+  @keyframes moveLeftBg {
+    0% {
+      background-position: center top;
+    }
+    50% {
+      background-position: center bottom;
+    }
+    100% {
+      background-position: center top;
+    }
+  }
+
+  @keyframes moveRightBg {
+    0% {
+      background-position: center bottom;
+    }
+    50% {
+      background-position: center top;
+    }
+    100% {
+      background-position: center bottom;
+    }
+  }
+
+  .center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    background: rgba(0, 0, 0, 0);
+    text-align: center;
+    color: white;
+    font-weight: 600;
+    user-select: none;
+  }
+
+  .cover {
+    width: 320px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(30, 144, 255, 0.6);
+    margin-bottom: 1rem;
+    position: relative;
+    cursor: pointer;
+  }
+
+  h2 {
+    margin: 0 0 5px 0;
+    font-size: 22px;
+  }
+
+  p.artist {
+    margin: 0 0 20px 0;
+    font-weight: 400;
+    font-size: 16px;
+    color: #1e90ff;
+  }
+
+  audio {
+    display: none;
+  }
+
+  .time {
+    font-size: 14px;
+    color: #63b3ff;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    user-select: none;
+    font-weight: 500;
+  }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: #1e90ff;
+    border-radius: 2px;
+    box-shadow: 0 0 8px #1e90ff;
+    cursor: pointer;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #1e90ff;
+    box-shadow: 0 0 10px #1e90ff;
+    border-radius: 50%;
+    margin-top: -4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  input[type=range]:hover::-webkit-slider-thumb {
+    background: #63b3ff;
+    box-shadow: 0 0 12px #63b3ff;
+  }
+
+  input[type=range]::-moz-range-track {
+    height: 4px;
+    background: #1e90ff;
+    border-radius: 2px;
+    box-shadow: 0 0 8px #1e90ff;
+  }
+
+  input[type=range]::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: #1e90ff;
+    box-shadow: 0 0 10px #1e90ff;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  input[type=range]:hover::-moz-range-thumb {
+    background: #63b3ff;
+    box-shadow: 0 0 12px #63b3ff;
+  }
+
+  p.footer {
+    font-size: 13px;
+    color: #63b3ff;
+    text-shadow: 0 0 5px rgba(0,0,0,0.7);
+  }
+
+  .blue-heart {
+    color: #1e90ff;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Play button overlay on cover */
+  #playButton {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(30, 144, 255, 0.7);
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    box-shadow: 0 0 20px rgba(30,144,255,0.7);
+  }
+
+  #playButton:hover {
+    background: rgba(30, 144, 255, 1);
+  }
+
+  #playButton:before {
+    content: "";
+    display: inline-block;
+    margin-left: 5px;
+    border-style: solid;
+    border-width: 15px 0 15px 25px;
+    border-color: transparent transparent transparent white;
+  }
+
+  #switchBtn {
+    margin-top: 10px;
+    background: transparent;
+    border: 2px solid #1e90ff;
+    color: #1e90ff;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  #switchBtn:hover {
+    background: #1e90ff;
+    color: #000;
+  }
+
+  @media (max-width: 700px) {
+    .container {
+      flex-direction: column;
+    }
+    .side {
+      width: 100vw;
+      height: 30vh;
+    }
+    .center {
+      position: static;
+      transform: none;
+      width: 90vw;
+      margin: 20px auto;
+    }
+    .cover {
+      width: 100%;
+    }
+  }
 </style>
 </head>
 <body>
 
-<div id="bg-blur"></div>
 <div class="container">
   <div class="side left"></div>
   <div class="side right"></div>
 </div>
 
 <div class="center">
-  <div class="cover" id="coverContainer">
-    <img src="default.png" alt="Cover" id="coverImage" />
+  <div class="cover" id="coverContainer" tabindex="0" role="button" aria-label="Play or pause audio">
+    <img src="cover.jpg" alt="Cover" style="width:100%; border-radius: 20px;" id="coverImage" />
     <div id="playButton"></div>
   </div>
-  <h2 id="songTitle">Welcome 🎶</h2>
-  <p class="artist" id="artistName">Click left or right to start</p>
+  <h2 id="songTitle">I'll Take Care of You</h2>
+  <p class="artist" id="artistName">Tyler, The Creator 💙</p>
 
   <audio id="audio" preload="metadata">
-    <source src="" type="audio/mpeg" />
+    <source src="music.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
   </audio>
 
   <div class="time">
@@ -99,13 +279,10 @@
     <span id="duration">0:00</span>
   </div>
 
-  <div class="progress-wrapper">
-    <div class="bunny" id="bunny"></div>
-    <input type="range" id="progress" value="0" min="0" max="100" />
-    <div class="cat" id="cat"></div>
-  </div>
+  <input type="range" id="progress" value="0" min="0" max="100" />
 
-  <button id="switchBtn">Switch Song</button>
+  <button id="switchBtn">Pag-Ibig ay Kanibalismo II<br><small style="font-weight: normal;">by fitterkarma</small></button>
+
   <p class="footer">To the love of my life <span class="blue-heart">💙</span></p>
 </div>
 
@@ -115,23 +292,33 @@
   const currentTimeElem = document.getElementById('currentTime');
   const durationElem = document.getElementById('duration');
   const playButton = document.getElementById('playButton');
+  const coverContainer = document.getElementById('coverContainer');
   const coverImage = document.getElementById('coverImage');
   const songTitle = document.getElementById('songTitle');
   const artistName = document.getElementById('artistName');
   const switchBtn = document.getElementById('switchBtn');
-  const bgBlur = document.getElementById('bg-blur');
-  const bunny = document.getElementById('bunny');
-  const cat = document.getElementById('cat');
 
+  // Songs data
   const songs = {
-    1: { title: "I'll Take Care of You", artist: "Tyler, The Creator 💙", src: "music.mp3", cover: "cover.jpg", side: "left" },
-    2: { title: "Pag-Ibig ay Kanibalismo II", artist: "fitterkarma", src: "music2.mp3", cover: "cover2.jpg", side: "right" }
+    1: {
+      title: "I'll Take Care of You",
+      artist: "Tyler, The Creator 💙",
+      src: "music.mp3",
+      cover: "cover.jpg"
+    },
+    2: {
+      title: "Pag-Ibig ay Kanibalismo II",
+      artist: "fitterkarma",
+      src: "music2.mp3",
+      cover: "cover2.jpg"
+    }
   };
 
-  let currentTrack = null;
+  let currentTrack = 1;
+  let fullscreenRequested = false;
 
+  // Format time in mm:ss
   function formatTime(seconds) {
-    if (isNaN(seconds)) return "0:00";
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return mins + ':' + (secs < 10 ? '0' : '') + secs;
@@ -147,61 +334,90 @@
     currentTimeElem.textContent = formatTime(audio.currentTime);
   });
 
-  progress.addEventListener('input', () => { audio.currentTime = progress.value; });
-
-  function playSong(trackId) {
-    const song = songs[trackId];
-    currentTrack = trackId;
-
-    const source = audio.querySelector('source');
-    source.src = song.src;
-    audio.load();
-
-    coverImage.src = song.cover;
-    songTitle.textContent = song.title;
-    artistName.textContent = song.artist;
-    bgBlur.style.backgroundImage = `url('${song.cover}')`;
-
-    audio.volume = 0;
-    audio.play().then(() => { fadeInAudio(); });
-  }
-
-  function fadeInAudio() {
-    let v = 0;
-    const fade = setInterval(() => {
-      if (v < 1) { v += 0.05; audio.volume = v; }
-      else { clearInterval(fade); }
-    }, 100);
-  }
-
-  function fadeOutAudio(callback) {
-    let v = audio.volume;
-    const fade = setInterval(() => {
-      if (v > 0.05) { v -= 0.05; audio.volume = v; }
-      else { clearInterval(fade); audio.pause(); if (callback) callback(); }
-    }, 100);
-  }
-
-  switchBtn.addEventListener('click', () => {
-    if (!currentTrack) return playSong(1);
-    const nextTrack = currentTrack === 1 ? 2 : 1;
-    fadeOutAudio(() => playSong(nextTrack));
+  progress.addEventListener('input', () => {
+    audio.currentTime = progress.value;
   });
 
-  playButton.addEventListener('click', () => { if (!currentTrack) playSong(1); else audio.paused ? audio.play() : audio.pause(); });
+  function requestFullscreen() {
+    if (fullscreenRequested) return; // Only request once per page load
 
-  audio.addEventListener('play', () => {
-    playButton.style.display = 'none';
-    bunny.classList.add('animate-bunny');
-    cat.classList.add('animate-cat');
-  });
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    }
+    fullscreenRequested = true;
+  }
+
+  function playAudio() {
+    if (!fullscreenRequested) requestFullscreen();
+
+    audio.play().then(() => {
+      playButton.style.display = 'none';
+    }).catch((error) => {
+      console.error("Playback prevented:", error);
+      playButton.style.display = 'flex';
+    });
+  }
+
+  // Click handlers for play button and cover
+  playButton.addEventListener('click', playAudio);
+  coverContainer.addEventListener('click', playAudio);
 
   audio.addEventListener('pause', () => {
     playButton.style.display = 'flex';
-    bunny.classList.remove('animate-bunny');
-    cat.classList.remove('animate-cat');
   });
+
+  audio.addEventListener('play', () => {
+    playButton.style.display = 'none';
+  });
+
+  function updateSwitchButton() {
+    const otherTrack = currentTrack === 1 ? 2 : 1;
+    const song = songs[otherTrack];
+    switchBtn.innerHTML = `${song.title}<br><small style="font-weight: normal;">by ${song.artist}</small>`;
+  }
+
+  switchBtn.addEventListener('click', () => {
+    currentTrack = currentTrack === 1 ? 2 : 1;
+    const song = songs[currentTrack];
+
+    // Pause current audio
+    audio.pause();
+
+    // Change the source element's src attribute
+    const source = audio.querySelector('source');
+    source.src = song.src;
+
+    // Update UI
+    coverImage.src = song.cover;
+    songTitle.textContent = song.title;
+    artistName.textContent = song.artist;
+
+    // Reload audio with new source
+    audio.load();
+
+    // Play new audio track after loading
+    audio.play().then(() => {
+      playButton.style.display = 'none';
+    }).catch(err => {
+      console.error('Playback error after switching track:', err);
+      playButton.style.display = 'flex';
+    });
+
+    updateSwitchButton();
+  });
+
+  // Initial button label
+  updateSwitchButton();
+
+  // Show play button initially
+  playButton.style.display = 'flex';
 </script>
+
 
 </body>
 </html>
