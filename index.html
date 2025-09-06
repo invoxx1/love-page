@@ -32,7 +32,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     filter: brightness(0.75);
-    transition: filter 0.3s ease;
+    transition: filter 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
   }
 
@@ -48,6 +48,12 @@
 
   .side:hover {
     filter: brightness(0.9);
+  }
+
+  /* Glow when active */
+  .active {
+    box-shadow: inset 0 0 100px rgba(30,144,255,0.8);
+    filter: brightness(1);
   }
 
   @keyframes moveLeftBg {
@@ -68,7 +74,10 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: 320px;
+    background: rgba(0, 0, 0, 0);
     text-align: center;
+    color: white;
+    font-weight: 600;
     user-select: none;
   }
 
@@ -78,11 +87,10 @@
     box-shadow: 0 0 20px rgba(30, 144, 255, 0.6);
     margin-bottom: 1rem;
     position: relative;
+    cursor: pointer;
   }
 
-  audio {
-    display: none;
-  }
+  audio { display: none; }
 
   .time {
     font-size: 14px;
@@ -90,6 +98,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 15px;
+    user-select: none;
     font-weight: 500;
   }
 
@@ -113,46 +122,6 @@
     margin-top: -4px;
     cursor: pointer;
   }
-
-  input[type=range]:hover::-webkit-slider-thumb {
-    background: #63b3ff;
-    box-shadow: 0 0 12px #63b3ff;
-  }
-
-  p.footer {
-    font-size: 13px;
-    color: #63b3ff;
-    text-shadow: 0 0 5px rgba(0,0,0,0.7);
-  }
-
-  .blue-heart {
-    color: #1e90ff;
-  }
-
-  #playButton {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(30, 144, 255, 0.7);
-    border-radius: 50%;
-    width: 70px;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 0 20px rgba(30,144,255,0.7);
-  }
-
-  #playButton:before {
-    content: "";
-    display: inline-block;
-    margin-left: 5px;
-    border-style: solid;
-    border-width: 15px 0 15px 25px;
-    border-color: transparent transparent transparent white;
-  }
 </style>
 </head>
 <body>
@@ -165,11 +134,12 @@
 <div class="center">
   <div class="cover">
     <img src="cover.jpg" alt="Cover" style="width:100%; border-radius: 20px;" id="coverImage" />
-    <div id="playButton"></div>
   </div>
+  <h2 id="songTitle">Select a side 💙</h2>
+  <p class="artist" id="artistName"></p>
 
   <audio id="audio" preload="metadata">
-    <source src="music.mp3" type="audio/mpeg" />
+    <source src="" type="audio/mpeg" />
     Your browser does not support the audio element.
   </audio>
 
@@ -179,8 +149,6 @@
   </div>
 
   <input type="range" id="progress" value="0" min="0" max="100" />
-
-  <p class="footer">To the love of my life <span class="blue-heart">💙</span></p>
 </div>
 
 <script>
@@ -188,12 +156,13 @@
   const progress = document.getElementById('progress');
   const currentTimeElem = document.getElementById('currentTime');
   const durationElem = document.getElementById('duration');
-  const playButton = document.getElementById('playButton');
   const coverImage = document.getElementById('coverImage');
   const songTitle = document.getElementById('songTitle');
   const artistName = document.getElementById('artistName');
+  const leftSide = document.getElementById('leftSide');
+  const rightSide = document.getElementById('rightSide');
 
-  // Songs mapped to left/right
+  // Songs data
   const songs = {
     left: {
       title: "I'll Take Care of You",
@@ -209,7 +178,7 @@
     }
   };
 
-  let fullscreenRequested = false;
+  let currentSide = null;
 
   function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
@@ -231,54 +200,40 @@
     audio.currentTime = progress.value;
   });
 
-  function requestFullscreen() {
-    if (fullscreenRequested) return;
-    const elem = document.documentElement;
-    if (elem.requestFullscreen) elem.requestFullscreen();
-    else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
-    else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
-    fullscreenRequested = true;
-  }
-
+  // Click to play song
   function playSong(side) {
     const song = songs[side];
-    if (!song) return;
+    currentSide = side;
 
-    if (!fullscreenRequested) requestFullscreen();
-
-    audio.pause();
-    const source = audio.querySelector('source');
-    source.src = song.src;
+    // Update UI
     coverImage.src = song.cover;
     songTitle.textContent = song.title;
     artistName.textContent = song.artist;
 
+    // Highlight active side
+    leftSide.classList.remove("active");
+    rightSide.classList.remove("active");
+    document.getElementById(side + "Side").classList.add("active");
+
+    // Switch audio
+    const source = audio.querySelector('source');
+    source.src = song.src;
     audio.load();
-    audio.play().then(() => {
-      playButton.style.display = 'none';
-    }).catch(err => {
-      console.error("Playback error:", err);
-      playButton.style.display = 'flex';
-    });
+    audio.play();
   }
 
-  // Click on left or right background
-  document.querySelector('.side.left').addEventListener('click', () => playSong('left'));
-  document.querySelector('.side.right').addEventListener('click', () => playSong('right'));
+  leftSide.addEventListener('click', () => playSong("left"));
+  rightSide.addEventListener('click', () => playSong("right"));
 
-  audio.addEventListener('pause', () => {
-    playButton.style.display = 'flex';
+  // Auto switch after song ends
+  audio.addEventListener('ended', () => {
+    if (currentSide === "left") {
+      playSong("right");
+    } else {
+      playSong("left");
+    }
   });
-
-  audio.addEventListener('play', () => {
-    playButton.style.display = 'none';
-  });
-
-  // Show play button initially
-  playButton.style.display = 'flex';
 </script>
-
 
 </body>
 </html>
-
