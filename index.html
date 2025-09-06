@@ -5,278 +5,182 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Minamahal ko 💙</title>
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body, html { height: 100%; font-family: 'Segoe UI', sans-serif; background: #000; color: white; overflow: hidden; }
 
-  body, html {
-    height: 100%;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: white;
-    overflow: hidden;
-    background: #000;
-  }
+  .container { display: flex; height: 100vh; width: 100vw; }
+  .side { width: 50vw; height: 100vh; background-position: center; background-size: cover; background-repeat: no-repeat; transition: filter 0.5s ease, box-shadow 0.5s ease; }
+  .side.left { background-image: url('left.jpg'); box-shadow: inset 0 0 100px rgba(30,144,255,0.5); }
+  .side.right { background-image: url('right.jpg'); box-shadow: inset 0 0 100px rgba(255,105,180,0.5); }
 
-  .container {
-    display: flex;
-    height: 100vh;
-    width: 100vw;
-    position: relative;
-  }
+  .side.glow { filter: brightness(1.1); animation: pulse 2s infinite alternate; }
+  @keyframes pulse { from { box-shadow: inset 0 0 100px rgba(255,255,255,0.3); } to { box-shadow: inset 0 0 180px rgba(255,255,255,0.7); } }
 
-  /* Dynamic blurred background */
-  .background-blur {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: black;
-    background-size: cover;
-    background-position: center;
-    filter: blur(40px) brightness(0.4);
-    z-index: -2;
-    transition: background-image 1s ease-in-out;
-  }
+  .center { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 320px; text-align: center; color: white; z-index: 10; }
+  .cover { width: 320px; border-radius: 20px; overflow: hidden; margin-bottom: 1rem; position: relative; }
+  .cover img { width: 100%; border-radius: 20px; animation: rotate 20s linear infinite; animation-play-state: paused; }
+  @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-  .side {
-    width: 50vw;
-    height: 100vh;
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    filter: brightness(0.75);
-    transition: filter 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    z-index: 1;
-  }
+  #playButton { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(30,144,255,0.7); border-radius: 50%; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  #playButton:before { content: ""; border-style: solid; border-width: 15px 0 15px 25px; border-color: transparent transparent transparent white; margin-left: 5px; }
 
-  .side.left {
-    background-image: url('left.jpg');
-    animation: moveLeftBg 30s linear infinite;
-  }
+  h2 { margin: 0 0 5px 0; font-size: 22px; }
+  p.artist { margin: 0 0 20px 0; font-size: 16px; color: #1e90ff; }
 
-  .side.right {
-    background-image: url('right.jpg');
-    animation: moveRightBg 30s linear infinite;
-  }
+  .time { font-size: 14px; color: #63b3ff; display: flex; justify-content: space-between; margin-bottom: 10px; }
 
-  .side:hover {
-    filter: brightness(0.9);
-  }
+  .progress-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
+  input[type=range] { -webkit-appearance: none; width: 100%; height: 4px; background: #1e90ff; border-radius: 2px; cursor: pointer; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: #fff; border-radius: 50%; cursor: pointer; }
 
-  /* Pulsing glow for active side */
-  .active-left {
-    animation: pulseBlue 2s infinite;
-    filter: brightness(1);
-  }
+  .cute-gif { width: 50px; height: 50px; object-fit: contain; opacity: 0; transition: opacity 0.5s ease-in-out; }
+  .cute-gif.playing { opacity: 1; }
 
-  .active-right {
-    animation: pulsePink 2s infinite;
-    filter: brightness(1);
-  }
+  #switchBtn { margin-top: 10px; background: transparent; border: 2px solid #1e90ff; color: #1e90ff; padding: 10px 15px; font-size: 14px; font-weight: 600; border-radius: 20px; cursor: pointer; }
+  #switchBtn:hover { background: #1e90ff; color: #000; }
 
-  @keyframes pulseBlue {
-    0%, 100% { box-shadow: inset 0 0 80px rgba(30,144,255,0.6); }
-    50% { box-shadow: inset 0 0 150px rgba(30,144,255,1); }
-  }
+  .footer { font-size: 13px; color: #63b3ff; margin-top: 10px; }
+  .blue-heart { color: #1e90ff; }
 
-  @keyframes pulsePink {
-    0%, 100% { box-shadow: inset 0 0 80px rgba(255,105,180,0.6); }
-    50% { box-shadow: inset 0 0 150px rgba(255,105,180,1); }
-  }
-
-  @keyframes moveLeftBg {
-    0% { background-position: center top; }
-    50% { background-position: center bottom; }
-    100% { background-position: center top; }
-  }
-
-  @keyframes moveRightBg {
-    0% { background-position: center bottom; }
-    50% { background-position: center top; }
-    100% { background-position: center bottom; }
-  }
-
-  .center {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 320px;
-    text-align: center;
-    color: white;
-    font-weight: 600;
-    user-select: none;
-    z-index: 2;
-  }
-
-  .cover {
-    width: 320px;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(30, 144, 255, 0.6);
-    margin-bottom: 1rem;
-    position: relative;
-  }
-
-  audio { display: none; }
-
-  .time {
-    font-size: 14px;
-    color: #63b3ff;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    user-select: none;
-    font-weight: 500;
-  }
-
-  input[type=range] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 4px;
-    background: #1e90ff;
-    border-radius: 2px;
-    box-shadow: 0 0 8px #1e90ff;
-    cursor: pointer;
-  }
-
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
-    background: #1e90ff;
-    box-shadow: 0 0 10px #1e90ff;
-    border-radius: 50%;
-    margin-top: -4px;
-    cursor: pointer;
-  }
+  /* Background blur overlay */
+  #bg-blur { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; filter: blur(40px) brightness(0.4); z-index: 0; }
 </style>
 </head>
 <body>
 
-<div class="background-blur" id="backgroundBlur"></div>
-
+<div id="bg-blur"></div>
 <div class="container">
-  <div class="side left" id="leftSide"></div>
-  <div class="side right" id="rightSide"></div>
+  <div class="side left"></div>
+  <div class="side right"></div>
 </div>
 
 <div class="center">
-  <div class="cover">
-    <img src="cover.jpg" alt="Cover" style="width:100%; border-radius: 20px;" id="coverImage" />
+  <div class="cover" id="coverContainer">
+    <img src="default.jpg" alt="Cover" id="coverImage" />
+    <div id="playButton"></div>
   </div>
-  <h2 id="songTitle">Select a side 💙</h2>
-  <p class="artist" id="artistName"></p>
+  <h2 id="songTitle">Welcome 🎶</h2>
+  <p class="artist" id="artistName">Click left or right to start</p>
 
-  <!-- Two audio elements for crossfade -->
-  <audio id="audio1" preload="metadata"></audio>
-  <audio id="audio2" preload="metadata"></audio>
+  <audio id="audio" preload="metadata">
+    <source src="" type="audio/mpeg" />
+  </audio>
 
   <div class="time">
     <span id="currentTime">0:00</span>
     <span id="duration">0:00</span>
   </div>
 
-  <input type="range" id="progress" value="0" min="0" max="100" />
+  <div class="progress-wrapper">
+    <img src="bunny.gif" class="cute-gif" id="bunnyGif" alt="Bunny">
+    <input type="range" id="progress" value="0" min="0" max="100" />
+    <img src="cat.gif" class="cute-gif" id="catGif" alt="Cat">
+  </div>
+
+  <button id="switchBtn">Switch Song</button>
+  <p class="footer">To the love of my life <span class="blue-heart">💙</span></p>
 </div>
 
 <script>
-  const audio1 = document.getElementById('audio1');
-  const audio2 = document.getElementById('audio2');
-  let currentAudio = audio1;
-  let nextAudio = audio2;
-
+  const audio = document.getElementById('audio');
   const progress = document.getElementById('progress');
   const currentTimeElem = document.getElementById('currentTime');
   const durationElem = document.getElementById('duration');
+  const playButton = document.getElementById('playButton');
   const coverImage = document.getElementById('coverImage');
   const songTitle = document.getElementById('songTitle');
   const artistName = document.getElementById('artistName');
-  const leftSide = document.getElementById('leftSide');
-  const rightSide = document.getElementById('rightSide');
-  const backgroundBlur = document.getElementById('backgroundBlur');
+  const switchBtn = document.getElementById('switchBtn');
+  const bgBlur = document.getElementById('bg-blur');
+  const bunnyGif = document.getElementById('bunnyGif');
+  const catGif = document.getElementById('catGif');
 
   const songs = {
-    left: {
-      title: "I'll Take Care of You",
-      artist: "Tyler, The Creator 💙",
-      src: "music.mp3",
-      cover: "cover.jpg"
-    },
-    right: {
-      title: "Pag-Ibig ay Kanibalismo II",
-      artist: "fitterkarma",
-      src: "music2.mp3",
-      cover: "cover2.jpg"
-    }
+    1: { title: "I'll Take Care of You", artist: "Tyler, The Creator 💙", src: "music.mp3", cover: "cover.jpg", side: "left" },
+    2: { title: "Pag-Ibig ay Kanibalismo II", artist: "fitterkarma", src: "music2.mp3", cover: "cover2.jpg", side: "right" }
   };
 
-  let currentSide = null;
+  let currentTrack = null;
 
   function formatTime(seconds) {
+    if (isNaN(seconds)) return "0:00";
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return mins + ':' + (secs < 10 ? '0' : '') + secs;
   }
 
-  function setupAudioEvents(audio) {
-    audio.addEventListener('loadedmetadata', () => {
-      durationElem.textContent = formatTime(audio.duration);
-      progress.max = Math.floor(audio.duration);
-    });
-
-    audio.addEventListener('timeupdate', () => {
-      if (!isNaN(audio.currentTime)) {
-        progress.value = Math.floor(audio.currentTime);
-        currentTimeElem.textContent = formatTime(audio.currentTime);
-      }
-    });
-  }
-
-  setupAudioEvents(audio1);
-  setupAudioEvents(audio2);
-
-  progress.addEventListener('input', () => {
-    currentAudio.currentTime = progress.value;
+  audio.addEventListener('loadedmetadata', () => {
+    durationElem.textContent = formatTime(audio.duration);
+    progress.max = Math.floor(audio.duration);
   });
 
-  function playSong(side) {
-    const song = songs[side];
-    currentSide = side;
+  audio.addEventListener('timeupdate', () => {
+    progress.value = Math.floor(audio.currentTime);
+    currentTimeElem.textContent = formatTime(audio.currentTime);
+  });
 
-    // Update UI
+  progress.addEventListener('input', () => { audio.currentTime = progress.value; });
+
+  function playSong(trackId) {
+    const song = songs[trackId];
+    currentTrack = trackId;
+
+    const source = audio.querySelector('source');
+    source.src = song.src;
+    audio.load();
+
     coverImage.src = song.cover;
     songTitle.textContent = song.title;
     artistName.textContent = song.artist;
-    backgroundBlur.style.backgroundImage = `url(${song.cover})`;
+    bgBlur.style.backgroundImage = `url('${song.cover}')`;
 
-    // Highlight active side
-    leftSide.classList.remove("active-left");
-    rightSide.classList.remove("active-right");
-    if (side === "left") leftSide.classList.add("active-left");
-    else rightSide.classList.add("active-right");
+    document.querySelectorAll('.side').forEach(s => s.classList.remove('glow'));
+    document.querySelector(`.side.${song.side}`).classList.add('glow');
 
-    // Crossfade
-    nextAudio.src = song.src;
-    nextAudio.volume = 0;
-    nextAudio.play();
-
-    let fadeInterval = setInterval(() => {
-      if (currentAudio.volume > 0.05) {
-        currentAudio.volume -= 0.05;
-        nextAudio.volume += 0.05;
-      } else {
-        clearInterval(fadeInterval);
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-        [currentAudio, nextAudio] = [nextAudio, currentAudio];
-      }
-    }, 200);
+    audio.volume = 0;
+    audio.play().then(() => {
+      coverImage.style.animationPlayState = "running";
+      fadeInAudio();
+    });
   }
 
-  leftSide.addEventListener('click', () => playSong("left"));
-  rightSide.addEventListener('click', () => playSong("right"));
+  function fadeInAudio() {
+    let v = 0;
+    const fade = setInterval(() => {
+      if (v < 1) { v += 0.05; audio.volume = v; }
+      else { clearInterval(fade); }
+    }, 100);
+  }
+
+  function fadeOutAudio(callback) {
+    let v = audio.volume;
+    const fade = setInterval(() => {
+      if (v > 0.05) { v -= 0.05; audio.volume = v; }
+      else { clearInterval(fade); audio.pause(); if (callback) callback(); }
+    }, 100);
+  }
+
+  switchBtn.addEventListener('click', () => {
+    if (!currentTrack) return playSong(1);
+    const nextTrack = currentTrack === 1 ? 2 : 1;
+    fadeOutAudio(() => playSong(nextTrack));
+  });
+
+  playButton.addEventListener('click', () => { if (!currentTrack) playSong(1); else audio.paused ? audio.play() : audio.pause(); });
+
+  audio.addEventListener('play', () => {
+    playButton.style.display = 'none';
+    coverImage.style.animationPlayState = "running";
+    bunnyGif.classList.add('playing');
+    catGif.classList.add('playing');
+  });
+
+  audio.addEventListener('pause', () => {
+    playButton.style.display = 'flex';
+    coverImage.style.animationPlayState = "paused";
+    bunnyGif.classList.remove('playing');
+    catGif.classList.remove('playing');
+  });
 </script>
 
 </body>
