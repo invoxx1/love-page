@@ -190,14 +190,26 @@
   const durationElem = document.getElementById('duration');
   const playButton = document.getElementById('playButton');
   const coverImage = document.getElementById('coverImage');
+  const songTitle = document.getElementById('songTitle');
+  const artistName = document.getElementById('artistName');
 
-  const leftSide = document.getElementById('leftSide');
-  const rightSide = document.getElementById('rightSide');
-
+  // Songs mapped to left/right
   const songs = {
-    left: { src: "music.mp3", cover: "cover.jpg" },
-    right: { src: "music2.mp3", cover: "cover2.jpg" }
+    left: {
+      title: "I'll Take Care of You",
+      artist: "Tyler, The Creator 💙",
+      src: "music.mp3",
+      cover: "cover.jpg"
+    },
+    right: {
+      title: "Pag-Ibig ay Kanibalismo II",
+      artist: "fitterkarma",
+      src: "music2.mp3",
+      cover: "cover2.jpg"
+    }
   };
+
+  let fullscreenRequested = false;
 
   function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
@@ -219,11 +231,27 @@
     audio.currentTime = progress.value;
   });
 
-  function playSong(track) {
-    const song = songs[track];
+  function requestFullscreen() {
+    if (fullscreenRequested) return;
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) elem.requestFullscreen();
+    else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+    else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
+    fullscreenRequested = true;
+  }
+
+  function playSong(side) {
+    const song = songs[side];
+    if (!song) return;
+
+    if (!fullscreenRequested) requestFullscreen();
+
+    audio.pause();
     const source = audio.querySelector('source');
     source.src = song.src;
     coverImage.src = song.cover;
+    songTitle.textContent = song.title;
+    artistName.textContent = song.artist;
 
     audio.load();
     audio.play().then(() => {
@@ -234,27 +262,23 @@
     });
   }
 
-  // Background click → play song
-  leftSide.addEventListener('click', () => playSong('left'));
-  rightSide.addEventListener('click', () => playSong('right'));
+  // Click on left or right background
+  document.querySelector('.side.left').addEventListener('click', () => playSong('left'));
+  document.querySelector('.side.right').addEventListener('click', () => playSong('right'));
 
-  // Play button overlay
-  playButton.addEventListener('click', () => {
-    if (audio.paused) {
-      audio.play();
-      playButton.style.display = 'none';
-    } else {
-      audio.pause();
-      playButton.style.display = 'flex';
-    }
+  audio.addEventListener('pause', () => {
+    playButton.style.display = 'flex';
   });
 
-  audio.addEventListener('pause', () => playButton.style.display = 'flex');
-  audio.addEventListener('play', () => playButton.style.display = 'none');
+  audio.addEventListener('play', () => {
+    playButton.style.display = 'none';
+  });
 
   // Show play button initially
   playButton.style.display = 'flex';
 </script>
 
+
 </body>
 </html>
+
