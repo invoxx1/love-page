@@ -1,144 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Minamahal ko 💙</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: url("background.jpg") no-repeat center center/cover;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-    }
-    .player {
-      text-align: center;
-      color: white;
-      position: relative;
-      width: 320px;
-    }
-    .cover {
-      width: 250px;
-      height: 250px;
-      border-radius: 0; /* ✅ no rounded frame */
-      margin-bottom: 10px;
-      object-fit: contain;
-      box-shadow: none; /* ✅ remove shadow frame */
-      background: transparent; /* ✅ no background */
-    }
-    .playlist-title {
-      font-size: 18px;
-      font-weight: bold;
-      margin-top: 5px;
-      color: #fff;
-      text-shadow: 0 0 8px rgba(0,0,0,0.5);
-    }
-    .song-title, .artist-name {
-      display: none; /* ✅ hidden until a track plays */
-    }
-    .play-button {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 250px;
-      height: 250px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 0;
-      background: rgba(0,0,0,0.6);
-      cursor: pointer;
-      font-size: 40px;
-      color: white;
-    }
-    audio {
-      width: 100%;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Minamahal ko 💙</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body, html {
+    height: 100%; font-family: 'Segoe UI', sans-serif;
+    color: white; overflow: hidden; background: #000;
+  }
+
+  .container { display: flex; height: 100vh; width: 100vw; }
+  .side {
+    width: 50vw; height: 100vh;
+    background-position: center;
+    background-size: cover; background-repeat: no-repeat;
+    filter: brightness(0.75);
+    transition: filter 0.3s ease; cursor: pointer;
+  }
+  .side.left { background-image: url('left.jpg'); animation: moveLeftBg 30s linear infinite; }
+  .side.right { background-image: url('right.jpg'); animation: moveRightBg 30s linear infinite; }
+  .side:hover { filter: brightness(0.9); }
+
+  @keyframes moveLeftBg {
+    0% { background-position: center top; }
+    50% { background-position: center bottom; }
+    100% { background-position: center top; }
+  }
+  @keyframes moveRightBg {
+    0% { background-position: center bottom; }
+    50% { background-position: center top; }
+    100% { background-position: center bottom; }
+  }
+
+  .center {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px; text-align: center; color: white;
+    font-weight: 600; user-select: none;
+  }
+
+  .cover { width: 320px; border-radius: 20px;
+    box-shadow: 0 0 20px rgba(30,144,255,0.6);
+    margin-bottom: 1rem; position: relative; cursor: pointer; 
+  }
+  h2 { margin: 0 0 5px 0; font-size: 22px; }
+  p.artist { margin: 0 0 20px 0; font-weight: 400; font-size: 16px; color: #1e90ff; }
+  audio { display: none; }
+
+  .time {
+    font-size: 14px; color: #63b3ff;
+    display: flex; justify-content: space-between;
+    margin-bottom: 5px; font-weight: 500;
+  }
+
+  /* updated gif row */
+  .gif-row {
+    position: relative;
+    width: 100%;
+    height: 40px;
+    margin-bottom: 10px;
+  }
+  .gif-row img {
+    height: 40px;
+    position: absolute;
+    top: 0;
+    transition: left 0.1s linear, right 0.1s linear;
+  }
+  #bunnyGif { left: 0; }
+  #catGif { right: 0; }
+
+  .progress-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(30,144,255,0.3);
+    transform: translateY(-50%);
+  }
+
+  input[type=range] {
+    -webkit-appearance: none; width: 100%; height: 4px;
+    background: #1e90ff; border-radius: 2px;
+    box-shadow: 0 0 8px #1e90ff; cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 12px; height: 12px;
+    background: #1e90ff; box-shadow: 0 0 10px #1e90ff;
+    border-radius: 50%; margin-top: -4px; cursor: pointer;
+  }
+
+  p.footer { font-size: 13px; color: #63b3ff; text-shadow: 0 0 5px rgba(0,0,0,0.7); }
+  .blue-heart { color: #1e90ff; }
+
+  #playButton {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(30, 144, 255, 0.7);
+    border-radius: 50%; width: 70px; height: 70px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: 0 0 20px rgba(30,144,255,0.7);
+  }
+  #playButton:before {
+    content: ""; margin-left: 5px;
+    border-style: solid; border-width: 15px 0 15px 25px;
+    border-color: transparent transparent transparent white;
+  }
+
+  @media (max-width: 700px) {
+    .container { flex-direction: column; }
+    .side { width: 100vw; height: 30vh; }
+    .center { position: static; transform: none; width: 90vw; margin: 20px auto; }
+    .cover { width: 100%; }
+  }
+</style>
 </head>
 <body>
-  <div class="player">
-    <img id="cover" class="cover" src="default.gif" alt="cover">
-    <div id="playButton" class="play-button">▶</div>
-    <audio id="audio">
-      <source src="song1.mp3" type="audio/mp3">
-    </audio>
-    <div class="playlist-title">crimsonriv3r playlist</div>
-    <div class="song-title" id="songTitle"></div>
-    <div class="artist-name" id="artistName"></div>
+
+<div class="container">
+  <div class="side left" id="leftSide"></div>
+  <div class="side right" id="rightSide"></div>
+</div>
+
+<div class="center">
+  <div class="cover" id="coverContainer">
+    <img src="cover.jpg" alt="Cover" style="width:100%; border-radius: 20px;" id="coverImage" />
+    <div id="playButton"></div>
+  </div>
+  <h2 id="songTitle">I'll Take Care of You</h2>
+  <p class="artist" id="artistName">Tyler, The Creator 💙</p>
+
+  <audio id="audio" preload="metadata">
+    <source src="music.mp3" type="audio/mpeg" />
+  </audio>
+
+  <div class="time">
+    <span id="currentTime">0:00</span>
+    <span id="duration">0:00</span>
   </div>
 
-  <script>
-    const audio = document.getElementById("audio");
-    const coverImage = document.getElementById("cover");
-    const playButton = document.getElementById("playButton");
-    const songTitle = document.getElementById("songTitle");
-    const artistName = document.getElementById("artistName");
+  <!-- updated gif row -->
+  <div class="gif-row">
+    <img src="bunny.gif" alt="Bunny" id="bunnyGif">
+    <div class="progress-line"></div>
+    <img src="cat.gif" alt="Cat" id="catGif">
+  </div>
 
-    let fullscreenRequested = false;
-    let currentTrack = 0;
+  <input type="range" id="progress" value="0" min="0" max="100" />
 
-    const songs = [
-      { src: "song1.mp3", title: "To the love of my life 💙", artist: "Dasnerth", cover: "cover.jpg" },
-      { src: "song2.mp3", title: "Song Two", artist: "Dasnerth", cover: "cover2.jpg" }
-    ];
+  <p class="footer">To the love of my life <span class="blue-heart">💙</span></p>
+</div>
 
-    function requestFullscreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => {
-          console.warn("Fullscreen not allowed:", err);
-        });
+<script>
+  const audio = document.getElementById('audio');
+  const progress = document.getElementById('progress');
+  const currentTimeElem = document.getElementById('currentTime');
+  const durationElem = document.getElementById('duration');
+  const playButton = document.getElementById('playButton');
+  const coverImage = document.getElementById('coverImage');
+  const songTitle = document.getElementById('songTitle');
+  const artistName = document.getElementById('artistName');
+  const leftSide = document.getElementById('leftSide');
+  const rightSide = document.getElementById('rightSide');
+  const bunny = document.getElementById('bunnyGif');
+  const cat = document.getElementById('catGif');
+
+  const songs = {
+    1: { title: "I'll Take Care of You", artist: "Tyler, The Creator 💙", src: "music.mp3", cover: "cover.jpg" },
+    2: { title: "Pag-Ibig ay Kanibalismo II", artist: "fitterkarma", src: "music2.mp3", cover: "cover2.jpg" }
+  };
+
+  let currentTrack = 1;
+  let fullscreenRequested = false;
+
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return mins + ':' + (secs < 10 ? '0' : '') + secs;
+  }
+
+  audio.addEventListener('loadedmetadata', () => {
+    durationElem.textContent = formatTime(audio.duration);
+    progress.max = Math.floor(audio.duration);
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    progress.value = Math.floor(audio.currentTime);
+    currentTimeElem.textContent = formatTime(audio.currentTime);
+
+    const percent = audio.currentTime / audio.duration;
+
+    // move bunny (left → center)
+    bunny.style.left = (percent * 45) + "%";
+    // move cat (right → center)
+    cat.style.right = (percent * 45) + "%";
+  });
+
+  progress.addEventListener('input', () => {
+    audio.currentTime = progress.value;
+  });
+
+  function requestFullscreen() {
+    if (fullscreenRequested) return;
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) elem.requestFullscreen();
+    fullscreenRequested = true;
+  }
+
+  function playAudio() {
+    if (!fullscreenRequested) requestFullscreen();
+    audio.play().then(() => { playButton.style.display = 'none'; })
+      .catch(err => { console.error("Playback prevented:", err); playButton.style.display = 'flex'; });
+  }
+
+  function toggleAudio() {
+    if (audio.paused) {
+      playAudio();
+    } else {
+      audio.pause();
+    }
+  }
+
+  function fadeOutAndSwitch(trackId) {
+    let fade = setInterval(() => {
+      if (audio.volume > 0.1) {
+        audio.volume -= 0.1;
+      } else {
+        clearInterval(fade);
+        audio.pause();
+        loadTrack(trackId);
+        audio.volume = 1;
+        playAudio();
       }
-      fullscreenRequested = true;
-    }
+    }, 100);
+  }
 
-    function playAudio() {
-      if (!fullscreenRequested) requestFullscreen();
-      audio.play().then(() => {
-        playButton.style.display = 'none';
-        coverImage.src = songs[currentTrack].cover;
-        songTitle.textContent = songs[currentTrack].title;
-        artistName.textContent = songs[currentTrack].artist;
-        songTitle.style.display = 'block';
-        artistName.style.display = 'block';
-      })
-      .catch(err => {
-        console.error("Playback prevented:", err);
-        playButton.style.display = 'flex';
-      });
-    }
+  function loadTrack(trackId) {
+    currentTrack = trackId;
+    const song = songs[trackId];
+    const source = audio.querySelector('source');
+    source.src = song.src;
+    coverImage.src = song.cover;
+    songTitle.textContent = song.title;
+    artistName.textContent = song.artist;
+    audio.load();
+  }
 
-    function loadTrack(trackId) {
-      currentTrack = trackId;
-      const song = songs[trackId];
-      const source = audio.querySelector('source');
-      source.src = song.src;
-      audio.load();
-      coverImage.src = "default.gif";
-      songTitle.style.display = 'none';
-      artistName.style.display = 'none';
-    }
+  audio.addEventListener('pause', () => { playButton.style.display = 'flex'; });
+  audio.addEventListener('play', () => { playButton.style.display = 'none'; });
 
-    playButton.addEventListener("click", playAudio);
+  // Loop forever between the 2 tracks
+  audio.addEventListener('ended', () => {
+    const next = currentTrack === 1 ? 2 : 1;
+    fadeOutAndSwitch(next);
+  });
 
-    audio.addEventListener("pause", () => {
-      playButton.style.display = 'flex';
-      coverImage.src = "default.gif";
-      songTitle.style.display = 'none';
-      artistName.style.display = 'none';
-    });
+  // side click events to manually switch
+  leftSide.addEventListener('click', () => fadeOutAndSwitch(1));
+  rightSide.addEventListener('click', () => fadeOutAndSwitch(2));
 
-    audio.addEventListener("ended", () => {
-      coverImage.src = "default.gif";
-      playButton.style.display = 'flex';
-      songTitle.style.display = 'none';
-      artistName.style.display = 'none';
-    });
+  // cover click toggles play/pause
+  coverImage.addEventListener('click', toggleAudio);
+  playButton.addEventListener('click', toggleAudio);
 
-    loadTrack(0);
-  </script>
+  // show play button initially
+  playButton.style.display = 'flex';
+</script>
 </body>
 </html>
