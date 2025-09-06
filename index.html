@@ -9,17 +9,11 @@
   body, html { height: 100%; font-family: 'Segoe UI', sans-serif; background: #000; color: white; overflow: hidden; }
 
   .container { display: flex; height: 100vh; width: 100vw; }
-  .side { width: 50vw; height: 100vh; background-position: center; background-size: cover; background-repeat: no-repeat; transition: filter 0.5s ease, box-shadow 0.5s ease; }
-  .side.left { background-image: url('left.jpg'); box-shadow: inset 0 0 100px rgba(30,144,255,0.5); }
-  .side.right { background-image: url('right.jpg'); box-shadow: inset 0 0 100px rgba(255,105,180,0.5); }
-
-  .side.glow { filter: brightness(1.1); animation: pulse 2s infinite alternate; }
-  @keyframes pulse { from { box-shadow: inset 0 0 100px rgba(255,255,255,0.3); } to { box-shadow: inset 0 0 180px rgba(255,255,255,0.7); } }
+  .side { width: 50vw; height: 100vh; }
 
   .center { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 320px; text-align: center; color: white; z-index: 10; }
   .cover { width: 320px; border-radius: 20px; overflow: hidden; margin-bottom: 1rem; position: relative; }
-  .cover img { width: 100%; border-radius: 20px; animation: rotate 20s linear infinite; animation-play-state: paused; }
-  @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .cover img { width: 100%; border-radius: 20px; }
 
   #playButton { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(30,144,255,0.7); border-radius: 50%; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
   #playButton:before { content: ""; border-style: solid; border-width: 15px 0 15px 25px; border-color: transparent transparent transparent white; margin-left: 5px; }
@@ -33,8 +27,43 @@
   input[type=range] { -webkit-appearance: none; width: 100%; height: 4px; background: #1e90ff; border-radius: 2px; cursor: pointer; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: #fff; border-radius: 50%; cursor: pointer; }
 
-  .cute-gif { width: 50px; height: 50px; object-fit: contain; opacity: 0; transition: opacity 0.5s ease-in-out; }
-  .cute-gif.playing { opacity: 1; }
+  /* Bunny Pixel (CSS box-shadows) */
+  .bunny, .cat { width: 1px; height: 1px; }
+  .bunny {
+    box-shadow:
+      1px 0 #fff, 2px 0 #fff, 3px 0 #fff,
+      0 1px #fff, 1px 1px pink, 2px 1px pink, 3px 1px #fff, 4px 1px #fff,
+      1px 2px pink, 2px 2px pink, 3px 2px pink,
+      1px 3px pink, 2px 3px #fff, 3px 3px pink;
+    transform: scale(8);
+    transform-origin: top left;
+    image-rendering: pixelated;
+  }
+
+  /* Cat Pixel */
+  .cat {
+    box-shadow:
+      1px 0 #aaa, 2px 0 #aaa, 3px 0 #aaa,
+      0 1px #aaa, 1px 1px #fff, 2px 1px #fff, 3px 1px #aaa, 4px 1px #aaa,
+      1px 2px #fff, 2px 2px #fff, 3px 2px #fff,
+      1px 3px #aaa, 2px 3px #fff, 3px 3px #aaa;
+    transform: scale(8);
+    transform-origin: top left;
+    image-rendering: pixelated;
+  }
+
+  .animate-bunny { animation: hop 1s infinite alternate; }
+  .animate-cat { animation: wiggle 1s infinite alternate; }
+
+  @keyframes hop {
+    from { transform: scale(8) translateY(0); }
+    to   { transform: scale(8) translateY(-2px); }
+  }
+
+  @keyframes wiggle {
+    from { transform: scale(8) rotate(0deg); }
+    to   { transform: scale(8) rotate(5deg); }
+  }
 
   #switchBtn { margin-top: 10px; background: transparent; border: 2px solid #1e90ff; color: #1e90ff; padding: 10px 15px; font-size: 14px; font-weight: 600; border-radius: 20px; cursor: pointer; }
   #switchBtn:hover { background: #1e90ff; color: #000; }
@@ -42,7 +71,6 @@
   .footer { font-size: 13px; color: #63b3ff; margin-top: 10px; }
   .blue-heart { color: #1e90ff; }
 
-  /* Background blur overlay */
   #bg-blur { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; filter: blur(40px) brightness(0.4); z-index: 0; }
 </style>
 </head>
@@ -72,9 +100,9 @@
   </div>
 
   <div class="progress-wrapper">
-    <img src="bunny.gif" class="cute-gif" id="bunnyGif" alt="Bunny">
+    <div class="bunny" id="bunny"></div>
     <input type="range" id="progress" value="0" min="0" max="100" />
-    <img src="cat.gif" class="cute-gif" id="catGif" alt="Cat">
+    <div class="cat" id="cat"></div>
   </div>
 
   <button id="switchBtn">Switch Song</button>
@@ -92,8 +120,8 @@
   const artistName = document.getElementById('artistName');
   const switchBtn = document.getElementById('switchBtn');
   const bgBlur = document.getElementById('bg-blur');
-  const bunnyGif = document.getElementById('bunnyGif');
-  const catGif = document.getElementById('catGif');
+  const bunny = document.getElementById('bunny');
+  const cat = document.getElementById('cat');
 
   const songs = {
     1: { title: "I'll Take Care of You", artist: "Tyler, The Creator 💙", src: "music.mp3", cover: "cover.jpg", side: "left" },
@@ -134,14 +162,8 @@
     artistName.textContent = song.artist;
     bgBlur.style.backgroundImage = `url('${song.cover}')`;
 
-    document.querySelectorAll('.side').forEach(s => s.classList.remove('glow'));
-    document.querySelector(`.side.${song.side}`).classList.add('glow');
-
     audio.volume = 0;
-    audio.play().then(() => {
-      coverImage.style.animationPlayState = "running";
-      fadeInAudio();
-    });
+    audio.play().then(() => { fadeInAudio(); });
   }
 
   function fadeInAudio() {
@@ -170,16 +192,14 @@
 
   audio.addEventListener('play', () => {
     playButton.style.display = 'none';
-    coverImage.style.animationPlayState = "running";
-    bunnyGif.classList.add('playing');
-    catGif.classList.add('playing');
+    bunny.classList.add('animate-bunny');
+    cat.classList.add('animate-cat');
   });
 
   audio.addEventListener('pause', () => {
     playButton.style.display = 'flex';
-    coverImage.style.animationPlayState = "paused";
-    bunnyGif.classList.remove('playing');
-    catGif.classList.remove('playing');
+    bunny.classList.remove('animate-bunny');
+    cat.classList.remove('animate-cat');
   });
 </script>
 
