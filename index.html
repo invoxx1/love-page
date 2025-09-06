@@ -42,11 +42,19 @@
   }
 
   .cover { width: 320px; border-radius: 20px;
-    box-shadow: 0 0 20px rgba(30,144,255,0.6);
     margin-bottom: 1rem; position: relative; cursor: pointer; 
   }
-  h2 { margin: 0 0 5px 0; font-size: 22px; }
-  p.artist { margin: 0 0 20px 0; font-weight: 400; font-size: 16px; color: #1e90ff; }
+
+  .playlist-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #1e90ff;
+    text-shadow: 0 0 8px rgba(0,0,0,0.6);
+  }
+
+  h2 { margin: 0 0 5px 0; font-size: 22px; display: none; }
+  p.artist { margin: 0 0 20px 0; font-weight: 400; font-size: 16px; color: #1e90ff; display: none; }
   audio { display: none; }
 
   .time {
@@ -55,7 +63,6 @@
     margin-bottom: 5px; font-weight: 500;
   }
 
-  /* updated gif row */
   .gif-row {
     position: relative;
     width: 100%;
@@ -125,8 +132,9 @@
 </div>
 
 <div class="center">
+  <div class="playlist-title">crimsonriv3r playlist</div>
   <div class="cover" id="coverContainer">
-    <img src="cover.jpg" alt="Cover" style="width:100%; border-radius: 20px;" id="coverImage" />
+    <img src="default.gif" alt="Cover" style="width:100%; border-radius: 20px; box-shadow:none;" id="coverImage" />
     <div id="playButton"></div>
   </div>
   <h2 id="songTitle">I'll Take Care of You</h2>
@@ -141,7 +149,6 @@
     <span id="duration">0:00</span>
   </div>
 
-  <!-- updated gif row -->
   <div class="gif-row">
     <img src="bunny.gif" alt="Bunny" id="bunnyGif">
     <div class="progress-line"></div>
@@ -191,10 +198,7 @@
     currentTimeElem.textContent = formatTime(audio.currentTime);
 
     const percent = audio.currentTime / audio.duration;
-
-    // move bunny (left → center)
     bunny.style.left = (percent * 45) + "%";
-    // move cat (right → center)
     cat.style.right = (percent * 45) + "%";
   });
 
@@ -211,8 +215,19 @@
 
   function playAudio() {
     if (!fullscreenRequested) requestFullscreen();
-    audio.play().then(() => { playButton.style.display = 'none'; })
-      .catch(err => { console.error("Playback prevented:", err); playButton.style.display = 'flex'; });
+    audio.play().then(() => { 
+      playButton.style.display = 'none'; 
+      // show cover + title/artist on play
+      coverImage.src = songs[currentTrack].cover;
+      songTitle.textContent = songs[currentTrack].title;
+      artistName.textContent = songs[currentTrack].artist;
+      songTitle.style.display = 'block';
+      artistName.style.display = 'block';
+    })
+    .catch(err => { 
+      console.error("Playback prevented:", err); 
+      playButton.style.display = 'flex'; 
+    });
   }
 
   function toggleAudio() {
@@ -242,31 +257,40 @@
     const song = songs[trackId];
     const source = audio.querySelector('source');
     source.src = song.src;
-    coverImage.src = song.cover;
-    songTitle.textContent = song.title;
-    artistName.textContent = song.artist;
     audio.load();
+    // reset to default
+    coverImage.src = "default.gif";
+    songTitle.style.display = 'none';
+    artistName.style.display = 'none';
   }
 
-  audio.addEventListener('pause', () => { playButton.style.display = 'flex'; });
+  audio.addEventListener('pause', () => { 
+    playButton.style.display = 'flex'; 
+    coverImage.src = "default.gif"; 
+    songTitle.style.display = 'none';
+    artistName.style.display = 'none';
+  });
+
   audio.addEventListener('play', () => { playButton.style.display = 'none'; });
 
-  // Loop forever between the 2 tracks
   audio.addEventListener('ended', () => {
+    coverImage.src = "default.gif";
+    songTitle.style.display = 'none';
+    artistName.style.display = 'none';
     const next = currentTrack === 1 ? 2 : 1;
     fadeOutAndSwitch(next);
   });
 
-  // side click events to manually switch
   leftSide.addEventListener('click', () => fadeOutAndSwitch(1));
   rightSide.addEventListener('click', () => fadeOutAndSwitch(2));
-
-  // cover click toggles play/pause
   coverImage.addEventListener('click', toggleAudio);
   playButton.addEventListener('click', toggleAudio);
 
-  // show play button initially
   playButton.style.display = 'flex';
+  // start with default.gif
+  coverImage.src = "default.gif";
+  songTitle.style.display = 'none';
+  artistName.style.display = 'none';
 </script>
 </body>
 </html>
