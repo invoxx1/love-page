@@ -122,14 +122,15 @@
 
 <div class="center">
   <div class="cover" id="coverContainer">
-    <img src="cover.jpg" alt="Cover" style="width:100%; border-radius: 20px;" id="coverImage" />
+    <!-- 👇 show default.png first -->
+    <img src="default.png" alt="Cover" style="width:100%; border-radius: 20px;" id="coverImage" />
     <div id="playButton"></div>
   </div>
-  <h2 id="songTitle">I'll Take Care of You</h2>
-  <p class="artist" id="artistName">Tyler, The Creator 💙</p>
+  <h2 id="songTitle">Select a side 💙</h2>
+  <p class="artist" id="artistName">Choose left or right</p>
 
   <audio id="audio" preload="metadata">
-    <source src="music.mp3" type="audio/mpeg" />
+    <source src="" type="audio/mpeg" />
   </audio>
 
   <div class="time">
@@ -165,7 +166,7 @@
     2: { title: "Pag-Ibig ay Kanibalismo II", artist: "fitterkarma", src: "music2.mp3", cover: "cover2.jpg" }
   };
 
-  let currentTrack = 1;
+  let currentTrack = null;
   let fullscreenRequested = false;
 
   function formatTime(seconds) {
@@ -240,21 +241,17 @@
   audio.addEventListener('pause', () => { playButton.style.display = 'flex'; });
   audio.addEventListener('play', () => { playButton.style.display = 'none'; });
 
-  // Loop forever between the 2 tracks
   audio.addEventListener('ended', () => {
     const next = currentTrack === 1 ? 2 : 1;
     fadeOutAndSwitch(next);
   });
 
-  // side click events to manually switch
   leftSide.addEventListener('click', () => fadeOutAndSwitch(1));
   rightSide.addEventListener('click', () => fadeOutAndSwitch(2));
 
-  // cover click toggles play/pause
   coverImage.addEventListener('click', toggleAudio);
   playButton.addEventListener('click', toggleAudio);
 
-  // show play button initially
   playButton.style.display = 'flex';
 </script>
 </body>
