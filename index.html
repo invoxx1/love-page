@@ -200,7 +200,7 @@
     if (!fullscreenRequested) requestFullscreen();
     audio.play().then(() => { 
       playButton.style.display = 'none'; 
-      overlay.style.display = 'none'; // hide overlay when playing
+
     })
     .catch(err => { console.error("Playback prevented:", err); playButton.style.display = 'flex'; });
   }
@@ -256,3 +256,4 @@
 </script>
 </body>
 </html>
+
