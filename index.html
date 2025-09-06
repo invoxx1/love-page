@@ -1,88 +1,188 @@
-<script>
-  const audio = document.getElementById("audio");
-  const coverImage = document.getElementById("coverImage");
-  const playButton = document.getElementById("playButton");
-  const songTitle = document.getElementById("songTitle");
-  const artistName = document.getElementById("artistName");
-
-  let currentTrack = 1;
-  let fullscreenRequested = false;
-
-  const songs = {
-    1: { title: "I'll Take Care of You", artist: "Tyler, The Creator 💙", src: "music.mp3", cover: "cover.jpg" },
-    2: { title: "Pag-Ibig ay Kanibalismo II", artist: "fitterkarma", src: "music2.mp3", cover: "cover2.jpg" }
-  };
-
-  function showDefault() {
-    coverImage.src = "default.gif";
-    coverImage.classList.add("no-frame");
-    songTitle.style.display = 'none';
-    artistName.style.display = 'none';
-  }
-
-  function showCover(trackId) {
-    const song = songs[trackId];
-    coverImage.src = song.cover;
-    coverImage.classList.remove("no-frame");
-    songTitle.textContent = song.title;
-    artistName.textContent = song.artist;
-    songTitle.style.display = 'block';
-    artistName.style.display = 'block';
-  }
-
-  function loadTrack(trackId) {
-    currentTrack = trackId;
-    const song = songs[trackId];
-    const source = audio.querySelector('source');
-    source.src = song.src;
-    audio.load();
-  }
-
-  function playAudio() {
-    if (!fullscreenRequested) {
-      requestFullscreen();
-      fullscreenRequested = true;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crimsonriv3r Playlist</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
     }
-    audio.play().then(() => {
-      playButton.style.display = 'none';
-      showCover(currentTrack);
+
+    .center {
+      text-align: center;
+    }
+
+    .playlist-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #fff;
+      text-shadow: 0 0 8px rgba(0,0,0,0.5);
+    }
+
+    .cover {
+      width: 320px;
+      margin-bottom: 1rem;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .cover img {
+      width: 100%;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(30,144,255,0.6);
+      transition: all 0.3s ease;
+    }
+
+    .cover img.no-frame {
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .info {
+      margin-top: 10px;
+    }
+
+    #songTitle, #artistName {
+      display: none;
+    }
+
+    .play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.6);
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .play-button span {
+      font-size: 40px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="center">
+    <div class="playlist-title">crimsonriv3r playlist</div>
+
+    <div class="cover" onclick="toggleAudio()">
+      <img src="default.gif" alt="Cover" id="coverImage" class="no-frame">
+      <div id="playButton" class="play-button"><span>▶</span></div>
+    </div>
+
+    <div class="info">
+      <div id="songTitle"></div>
+      <div id="artistName"></div>
+    </div>
+
+    <audio id="audio">
+      <source src="" type="audio/mpeg">
+    </audio>
+  </div>
+
+  <script>
+    const audio = document.getElementById("audio");
+    const coverImage = document.getElementById("coverImage");
+    const playButton = document.getElementById("playButton");
+    const songTitle = document.getElementById("songTitle");
+    const artistName = document.getElementById("artistName");
+
+    let currentTrack = 1;
+    let fullscreenRequested = false;
+
+    const songs = {
+      1: { title: "I'll Take Care of You", artist: "Tyler, The Creator 💙", src: "music.mp3", cover: "cover.jpg" },
+      2: { title: "Pag-Ibig ay Kanibalismo II", artist: "fitterkarma", src: "music2.mp3", cover: "cover2.jpg" }
+    };
+
+    function showDefault() {
+      coverImage.src = "default.gif";
+      coverImage.classList.add("no-frame");
+      songTitle.style.display = 'none';
+      artistName.style.display = 'none';
+    }
+
+    function showCover(trackId) {
+      const song = songs[trackId];
+      coverImage.src = song.cover;
+      coverImage.classList.remove("no-frame");
+      songTitle.textContent = song.title;
+      artistName.textContent = song.artist;
+      songTitle.style.display = 'block';
+      artistName.style.display = 'block';
+    }
+
+    function loadTrack(trackId) {
+      currentTrack = trackId;
+      const song = songs[trackId];
+      const source = audio.querySelector('source');
+      source.src = song.src;
+      audio.load();
+      showDefault();
+    }
+
+    function playAudio() {
+      if (!fullscreenRequested) {
+        requestFullscreen();
+        fullscreenRequested = true;
+      }
+      audio.play().then(() => {
+        playButton.style.display = 'none';
+        showCover(currentTrack);
+      });
+    }
+
+    function pauseAudio() {
+      audio.pause();
+      playButton.style.display = 'flex';
+      showDefault();
+    }
+
+    function toggleAudio() {
+      if (audio.paused) {
+        playAudio();
+      } else {
+        pauseAudio();
+      }
+    }
+
+    function requestFullscreen() {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) elem.requestFullscreen();
+      else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+      else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
+    }
+
+    audio.addEventListener('pause', () => {
+      playButton.style.display = 'flex';
+      showDefault();
     });
-  }
 
-  function pauseAudio() {
-    audio.pause();
-    playButton.style.display = 'flex';
+    audio.addEventListener('ended', () => {
+      showDefault();
+      const next = currentTrack === 1 ? 2 : 1;
+      loadTrack(next);
+    });
+
+    // Show default.gif on page load
     showDefault();
-  }
-
-  function toggleAudio() {
-    if (audio.paused) {
-      playAudio();
-    } else {
-      pauseAudio();
-    }
-  }
-
-  function requestFullscreen() {
-    const elem = document.documentElement;
-    if (elem.requestFullscreen) elem.requestFullscreen();
-    else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
-    else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
-  }
-
-  audio.addEventListener('pause', () => {
-    playButton.style.display = 'flex';
-    showDefault();
-  });
-
-  // ✅ Loop forever: when song ends, go to next and autoplay
-  audio.addEventListener('ended', () => {
-    const next = currentTrack === Object.keys(songs).length ? 1 : currentTrack + 1;
-    loadTrack(next);
-    showCover(next);
-    audio.play();
-  });
-
-  // Show default.gif on page load
-  showDefault();
-</script>
+  </script>
+</body>
+</html>
