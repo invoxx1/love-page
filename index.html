@@ -1,259 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Minamahal ko 💙</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body, html {
-    height: 100%; font-family: 'Segoe UI', sans-serif;
-    color: white; overflow: hidden; background: #000;
-  }
+  <meta charset="UTF-8">
+  <title>Music Gift</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: url('fd97afc3-1b48-4b69-99a4-be5304b68e27.png') no-repeat center center/cover;
+      overflow: hidden;
+      position: relative;
+      font-family: Arial, sans-serif;
+    }
 
-  .container { display: flex; height: 100vh; width: 100vw; }
-  .side {
-    width: 50vw; height: 100vh;
-    background-position: center center;
-    background-size: cover; background-repeat: no-repeat;
-    filter: brightness(0.75);
-    transition: filter 0.3s ease; cursor: pointer;
-  }
-  .side.left { background-image: url('left.jpg'); animation: moveLeftBg 30s linear infinite; }
-  .side.right { background-image: url('right.jpg'); animation: moveRightBg 30s linear infinite; }
-  .side:hover { filter: brightness(0.9); }
+    /* Default PNG overlay */
+    #defaultOverlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
 
-  @keyframes moveLeftBg {
-    0% { background-position: center top; }
-    50% { background-position: center bottom; }
-    100% { background-position: center top; }
-  }
-  @keyframes moveRightBg {
-    0% { background-position: center bottom; }
-    50% { background-position: center top; }
-    100% { background-position: center bottom; }
-  }
+    #defaultOverlay img {
+      max-width: 300px;
+      border-radius: 12px;
+    }
 
-  .center {
-    position: fixed; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 320px; text-align: center; color: white;
-    font-weight: 600; user-select: none;
-    z-index: 5;
-  }
+    .music-player {
+      position: relative;
+      text-align: center;
+      background: rgba(255,255,255,0.9);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      z-index: 5;
+    }
 
-  .cover { width: 320px; border-radius: 20px;
-    box-shadow: 0 0 20px rgba(30,144,255,0.6);
-    margin-bottom: 1rem; position: relative; cursor: pointer; 
-  }
-  h2 { margin: 0 0 5px 0; font-size: 22px; }
-  p.artist { margin: 0 0 20px 0; font-weight: 400; font-size: 16px; color: #1e90ff; }
-  audio { display: none; }
+    .album-art {
+      width: 200px;
+      height: 200px;
+      border-radius: 20px;
+      object-fit: cover;
+    }
 
-  .time {
-    font-size: 14px; color: #63b3ff;
-    display: flex; justify-content: space-between;
-    margin-bottom: 5px; font-weight: 500;
-  }
-  .gif-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  .gif-row img { height: 40px; }
+    .song-title {
+      font-weight: bold;
+      margin-top: 10px;
+      font-size: 1.2rem;
+    }
 
-  input[type=range] {
-    -webkit-appearance: none; width: 100%; height: 4px;
-    background: #1e90ff; border-radius: 2px;
-    box-shadow: 0 0 8px #1e90ff; cursor: pointer;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 12px; height: 12px;
-    background: #1e90ff; box-shadow: 0 0 10px #1e90ff;
-    border-radius: 50%; margin-top: -4px; cursor: pointer;
-  }
+    .artist {
+      color: #555;
+      font-size: 0.9rem;
+    }
 
-  p.footer { font-size: 13px; color: #63b3ff; text-shadow: 0 0 5px rgba(0,0,0,0.7); }
-  .blue-heart { color: #1e90ff; }
+    .progress-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+    }
 
-  #playButton {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(30, 144, 255, 0.7);
-    border-radius: 50%; width: 70px; height: 70px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; box-shadow: 0 0 20px rgba(30,144,255,0.7);
-  }
-  #playButton:before {
-    content: ""; margin-left: 5px;
-    border-style: solid; border-width: 15px 0 15px 25px;
-    border-color: transparent transparent transparent white;
-  }
+    .progress {
+      flex: 1;
+      height: 5px;
+      background: #ddd;
+      margin: 0 10px;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+    }
 
-  /* Default overlay */
-  #defaultOverlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.85);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 20;
-  }
-  #defaultOverlay img {
-    max-width: 300px;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(30,144,255,0.6);
-  }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #2196f3;
+    }
 
-  @media (max-width: 700px) {
-    .container { flex-direction: column; }
-    .side { width: 100vw; height: 30vh; }
-    .center { position: static; transform: none; width: 90vw; margin: 20px auto; }
-    .cover { width: 100%; }
-  }
-</style>
+    .gif-icon {
+      width: 30px;
+      height: 30px;
+    }
+
+    .message {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #2196f3;
+    }
+
+    /* Clickable halves */
+    .click-zone {
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      z-index: 2;
+    }
+    .left-zone { left: 0; }
+    .right-zone { right: 0; }
+  </style>
 </head>
 <body>
 
-<div id="defaultOverlay">
-  <img src="default.png" alt="Welcome">
-</div>
-
-<div class="container">
-  <div class="side left" id="leftSide"></div>
-  <div class="side right" id="rightSide"></div>
-</div>
-
-<div class="center">
-  <div class="cover" id="coverContainer">
-    <!-- 👇 show default.png first -->
-    <img src="default.png" alt="Cover" style="width:100%; border-radius: 20px;" id="coverImage" />
-    <div id="playButton"></div>
-  </div>
-  <h2 id="songTitle">Select a side 💙</h2>
-  <p class="artist" id="artistName">Choose left or right</p>
-
-  <audio id="audio" preload="metadata">
-    <source src="" type="audio/mpeg" />
-  </audio>
-
-  <div class="time">
-    <span id="currentTime">0:00</span>
-    <span id="duration">0:00</span>
+  <!-- Default PNG -->
+  <div id="defaultOverlay">
+    <img src="071018a1-dbbd-4c02-9e94-09657f8ef754.png" alt="Default Cover">
   </div>
 
-  <div class="gif-row">
-    <img src="bunny.gif" alt="Bunny">
-    <img src="cat.gif" alt="Cat">
+  <div class="music-player" id="player" style="display:none;">
+    <img src="" class="album-art" id="albumArt">
+    <div class="song-title" id="songTitle"></div>
+    <div class="artist" id="artist"></div>
+
+    <div class="progress-container">
+      <img src="cat.gif" class="gif-icon">
+      <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <img src="bunny.gif" class="gif-icon">
+    </div>
+
+    <div class="message">To the love of my life 💙</div>
   </div>
 
-  <input type="range" id="progress" value="0" min="0" max="100" />
+  <!-- Hidden audio -->
+  <audio id="audio"></audio>
 
-  <p class="footer">To the love of my life <span class="blue-heart">💙</span></p>
-</div>
+  <!-- Click zones -->
+  <div class="click-zone left-zone" onclick="playSong(0)"></div>
+  <div class="click-zone right-zone" onclick="playSong(1)"></div>
 
-<script>
-  const audio = document.getElementById('audio');
-  const progress = document.getElementById('progress');
-  const currentTimeElem = document.getElementById('currentTime');
-  const durationElem = document.getElementById('duration');
-  const playButton = document.getElementById('playButton');
-  const coverImage = document.getElementById('coverImage');
-  const songTitle = document.getElementById('songTitle');
-  const artistName = document.getElementById('artistName');
-  const leftSide = document.getElementById('leftSide');
-  const rightSide = document.getElementById('rightSide');
-  const overlay = document.getElementById('defaultOverlay');
-
-  const songs = {
-    1: { title: "I'll Take Care of You", artist: "Tyler, The Creator 💙", src: "music.mp3", cover: "cover.jpg" },
-    2: { title: "Pag-Ibig ay Kanibalismo II", artist: "fitterkarma", src: "music2.mp3", cover: "cover2.jpg" }
-  };
-
-  let currentTrack = null;
-  let fullscreenRequested = false;
-
-  function formatTime(seconds) {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return mins + ':' + (secs < 10 ? '0' : '') + secs;
-  }
-
-  audio.addEventListener('loadedmetadata', () => {
-    durationElem.textContent = formatTime(audio.duration);
-    progress.max = Math.floor(audio.duration);
-  });
-
-  audio.addEventListener('timeupdate', () => {
-    progress.value = Math.floor(audio.currentTime);
-    currentTimeElem.textContent = formatTime(audio.currentTime);
-  });
-
-  progress.addEventListener('input', () => {
-    audio.currentTime = progress.value;
-  });
-
-  function requestFullscreen() {
-    if (fullscreenRequested) return;
-    const elem = document.documentElement;
-    if (elem.requestFullscreen) elem.requestFullscreen();
-    fullscreenRequested = true;
-  }
-
-  function playAudio() {
-    if (!fullscreenRequested) requestFullscreen();
-    audio.play().then(() => { 
-      playButton.style.display = 'none'; 
-
-    })
-    .catch(err => { console.error("Playback prevented:", err); playButton.style.display = 'flex'; });
-  }
-
-  function toggleAudio() {
-    if (audio.paused) {
-      playAudio();
-    } else {
-      audio.pause();
-    }
-  }
-
-  function fadeOutAndSwitch(trackId) {
-    let fade = setInterval(() => {
-      if (audio.volume > 0.1) {
-        audio.volume -= 0.1;
-      } else {
-        clearInterval(fade);
-        audio.pause();
-        loadTrack(trackId);
-        audio.volume = 1;
-        playAudio();
+  <script>
+    const songs = [
+      {
+        title: "I'll Take Care of You",
+        artist: "Tyler, The Creator",
+        cover: "https://i.scdn.co/image/ab67616d0000b273cf22fe7a8e9c3711b9fceeba",
+        src: "song1.mp3"
+      },
+      {
+        title: "Other Song",
+        artist: "Another Artist",
+        cover: "https://i.scdn.co/image/ab67616d0000b273e1a2c8b7b7c78a56f9db20d5",
+        src: "song2.mp3"
       }
-    }, 100);
-  }
+    ];
 
-  function loadTrack(trackId) {
-    currentTrack = trackId;
-    const song = songs[trackId];
-    const source = audio.querySelector('source');
-    source.src = song.src;
-    coverImage.src = song.cover;
-    songTitle.textContent = song.title;
-    artistName.textContent = song.artist;
-    audio.load();
-  }
+    const audio = document.getElementById("audio");
+    const albumArt = document.getElementById("albumArt");
+    const songTitle = document.getElementById("songTitle");
+    const artist = document.getElementById("artist");
+    const progressBar = document.getElementById("progressBar");
+    const player = document.getElementById("player");
+    const overlay = document.getElementById("defaultOverlay");
 
-  audio.addEventListener('pause', () => { playButton.style.display = 'flex'; });
-  audio.addEventListener('play', () => { playButton.style.display = 'none'; });
+    function playSong(index) {
+      const song = songs[index];
+      albumArt.src = song.cover;
+      songTitle.textContent = song.title;
+      artist.textContent = song.artist;
+      audio.src = song.src;
+      audio.play();
 
-  audio.addEventListener('ended', () => {
-    const next = currentTrack === 1 ? 2 : 1;
-    fadeOutAndSwitch(next);
-  });
+      overlay.style.display = "none"; 
+      player.style.display = "block";
+    }
 
-  leftSide.addEventListener('click', () => fadeOutAndSwitch(1));
-  rightSide.addEventListener('click', () => fadeOutAndSwitch(2));
+    audio.addEventListener("timeupdate", () => {
+      const progress = (audio.currentTime / audio.duration) * 100;
+      progressBar.style.width = progress + "%";
+    });
+  </script>
 
-  coverImage.addEventListener('click', toggleAudio);
-  playButton.addEventListener('click', toggleAudio);
-
-  playButton.style.display = 'flex';
-</script>
 </body>
 </html>
-
