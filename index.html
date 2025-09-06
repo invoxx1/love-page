@@ -43,11 +43,7 @@
 
   .cover { width: 320px; margin-bottom: 1rem; position: relative; cursor: pointer; }
 
-  /* Always show the image at full width */
-  .cover img {
-    width: 100%;
-    display: block;
-  }
+  .cover img { width: 100%; display: block; }
 
   /* Covers get rounded corners + shadow, but not default.gif */
   .cover img:not([src*="default.gif"]) {
@@ -73,11 +69,12 @@
     margin-bottom: 5px; font-weight: 500;
   }
 
+  /* Cat + Bunny progress animation */
   .gif-row {
     position: relative;
     width: 100%;
     height: 40px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
   .gif-row img {
     height: 40px;
@@ -85,8 +82,8 @@
     top: 0;
     transition: left 0.1s linear, right 0.1s linear;
   }
-  #bunnyGif { left: 0; }
-  #catGif { right: 0; }
+  #catGif { left: 0; }
+  #bunnyGif { right: 0; }
 
   .progress-line {
     position: absolute;
@@ -98,33 +95,8 @@
     transform: translateY(-50%);
   }
 
-  input[type=range] {
-    -webkit-appearance: none; width: 100%; height: 4px;
-    background: #1e90ff; border-radius: 2px;
-    box-shadow: 0 0 8px #1e90ff; cursor: pointer;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 12px; height: 12px;
-    background: #1e90ff; box-shadow: 0 0 10px #1e90ff;
-    border-radius: 50%; margin-top: -4px; cursor: pointer;
-  }
-
   p.footer { font-size: 13px; color: #63b3ff; text-shadow: 0 0 5px rgba(0,0,0,0.7); }
   .blue-heart { color: #1e90ff; }
-
-  #playButton {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(30, 144, 255, 0.7);
-    border-radius: 50%; width: 70px; height: 70px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; box-shadow: 0 0 20px rgba(30,144,255,0.7);
-  }
-  #playButton:before {
-    content: ""; margin-left: 5px;
-    border-style: solid; border-width: 15px 0 15px 25px;
-    border-color: transparent transparent transparent white;
-  }
 
   @media (max-width: 700px) {
     .container { flex-direction: column; }
@@ -145,7 +117,6 @@
   <div class="playlist-title">crimsonriv3r playlist</div>
   <div class="cover" id="coverContainer">
     <img src="default.gif" alt="Cover" id="coverImage" />
-    <div id="playButton"></div>
   </div>
   <h2 id="songTitle">I'll Take Care of You</h2>
   <p class="artist" id="artistName">Tyler, The Creator 💙</p>
@@ -159,23 +130,20 @@
     <span id="duration">0:00</span>
   </div>
 
+  <!-- GIF progress bar -->
   <div class="gif-row">
-    <img src="bunny.gif" alt="Bunny" id="bunnyGif">
-    <div class="progress-line"></div>
     <img src="cat.gif" alt="Cat" id="catGif">
+    <div class="progress-line"></div>
+    <img src="bunny.gif" alt="Bunny" id="bunnyGif">
   </div>
-
-  <input type="range" id="progress" value="0" min="0" max="100" />
 
   <p class="footer">To the love of my life <span class="blue-heart">💙</span></p>
 </div>
 
 <script>
   const audio = document.getElementById('audio');
-  const progress = document.getElementById('progress');
   const currentTimeElem = document.getElementById('currentTime');
   const durationElem = document.getElementById('duration');
-  const playButton = document.getElementById('playButton');
   const coverImage = document.getElementById('coverImage');
   const songTitle = document.getElementById('songTitle');
   const artistName = document.getElementById('artistName');
@@ -200,20 +168,18 @@
 
   audio.addEventListener('loadedmetadata', () => {
     durationElem.textContent = formatTime(audio.duration);
-    progress.max = Math.floor(audio.duration);
   });
 
   audio.addEventListener('timeupdate', () => {
-    progress.value = Math.floor(audio.currentTime);
     currentTimeElem.textContent = formatTime(audio.currentTime);
 
     const percent = audio.currentTime / audio.duration;
-    bunny.style.left = (percent * 45) + "%";
-    cat.style.right = (percent * 45) + "%";
-  });
 
-  progress.addEventListener('input', () => {
-    audio.currentTime = progress.value;
+    // Cat moves from left → center
+    cat.style.left = (percent * 45) + "%";
+
+    // Bunny moves from right → center
+    bunny.style.right = (percent * 45) + "%";
   });
 
   function requestFullscreen() {
@@ -225,19 +191,14 @@
 
   function playAudio() {
     if (!fullscreenRequested) requestFullscreen();
-    audio.play().then(() => { 
-      playButton.style.display = 'none'; 
-      // show cover + title/artist on play
+    audio.play().then(() => {
       coverImage.src = songs[currentTrack].cover;
       songTitle.textContent = songs[currentTrack].title;
       artistName.textContent = songs[currentTrack].artist;
       songTitle.style.display = 'block';
       artistName.style.display = 'block';
     })
-    .catch(err => { 
-      console.error("Playback prevented:", err); 
-      playButton.style.display = 'flex'; 
-    });
+    .catch(err => { console.error("Playback prevented:", err); });
   }
 
   function toggleAudio() {
@@ -268,20 +229,16 @@
     const source = audio.querySelector('source');
     source.src = song.src;
     audio.load();
-    // reset to default
     coverImage.src = "default.gif";
     songTitle.style.display = 'none';
     artistName.style.display = 'none';
   }
 
-  audio.addEventListener('pause', () => { 
-    playButton.style.display = 'flex'; 
-    coverImage.src = "default.gif"; 
+  audio.addEventListener('pause', () => {
+    coverImage.src = "default.gif";
     songTitle.style.display = 'none';
     artistName.style.display = 'none';
   });
-
-  audio.addEventListener('play', () => { playButton.style.display = 'none'; });
 
   audio.addEventListener('ended', () => {
     coverImage.src = "default.gif";
@@ -294,10 +251,7 @@
   leftSide.addEventListener('click', () => fadeOutAndSwitch(1));
   rightSide.addEventListener('click', () => fadeOutAndSwitch(2));
   coverImage.addEventListener('click', toggleAudio);
-  playButton.addEventListener('click', toggleAudio);
 
-  playButton.style.display = 'flex';
-  // start with default.gif
   coverImage.src = "default.gif";
   songTitle.style.display = 'none';
   artistName.style.display = 'none';
