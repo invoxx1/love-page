@@ -18,8 +18,7 @@
 
   .center { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 320px; text-align: center; color: white; z-index: 10; }
   .cover { width: 320px; border-radius: 20px; overflow: hidden; margin-bottom: 1rem; position: relative; }
-  .cover img { width: 100%; border-radius: 20px; animation: rotate 20s linear infinite; animation-play-state: paused; }
-  @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .cover img { width: 100%; border-radius: 20px; }
 
   #playButton { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(30,144,255,0.7); border-radius: 50%; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
   #playButton:before { content: ""; border-style: solid; border-width: 15px 0 15px 25px; border-color: transparent transparent transparent white; margin-left: 5px; }
@@ -33,8 +32,17 @@
   input[type=range] { -webkit-appearance: none; width: 100%; height: 4px; background: #1e90ff; border-radius: 2px; cursor: pointer; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: #fff; border-radius: 50%; cursor: pointer; }
 
-  .cute-gif { width: 50px; height: 50px; object-fit: contain; opacity: 0; transition: opacity 0.5s ease-in-out; }
-  .cute-gif.playing { opacity: 1; }
+  /* Pixel Bunny */
+  .bunny, .cat { width: 40px; height: 40px; image-rendering: pixelated; }
+  .bunny { background: url('bunny-pixel.png') no-repeat center/contain; }
+  .cat { background: url('cat-pixel.png') no-repeat center/contain; }
+
+  .animate { opacity: 1; animation: hop 1s infinite alternate; }
+  @keyframes hop {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+  }
 
   #switchBtn { margin-top: 10px; background: transparent; border: 2px solid #1e90ff; color: #1e90ff; padding: 10px 15px; font-size: 14px; font-weight: 600; border-radius: 20px; cursor: pointer; }
   #switchBtn:hover { background: #1e90ff; color: #000; }
@@ -72,9 +80,9 @@
   </div>
 
   <div class="progress-wrapper">
-    <img src="bunny.gif" class="cute-gif" id="bunnyGif" alt="Bunny">
+    <div class="bunny" id="bunny"></div>
     <input type="range" id="progress" value="0" min="0" max="100" />
-    <img src="cat.gif" class="cute-gif" id="catGif" alt="Cat">
+    <div class="cat" id="cat"></div>
   </div>
 
   <button id="switchBtn">Switch Song</button>
@@ -92,8 +100,8 @@
   const artistName = document.getElementById('artistName');
   const switchBtn = document.getElementById('switchBtn');
   const bgBlur = document.getElementById('bg-blur');
-  const bunnyGif = document.getElementById('bunnyGif');
-  const catGif = document.getElementById('catGif');
+  const bunny = document.getElementById('bunny');
+  const cat = document.getElementById('cat');
 
   const songs = {
     1: { title: "I'll Take Care of You", artist: "Tyler, The Creator 💙", src: "music.mp3", cover: "cover.jpg", side: "left" },
@@ -138,10 +146,7 @@
     document.querySelector(`.side.${song.side}`).classList.add('glow');
 
     audio.volume = 0;
-    audio.play().then(() => {
-      coverImage.style.animationPlayState = "running";
-      fadeInAudio();
-    });
+    audio.play().then(() => { fadeInAudio(); });
   }
 
   function fadeInAudio() {
@@ -170,16 +175,14 @@
 
   audio.addEventListener('play', () => {
     playButton.style.display = 'none';
-    coverImage.style.animationPlayState = "running";
-    bunnyGif.classList.add('playing');
-    catGif.classList.add('playing');
+    bunny.classList.add('animate');
+    cat.classList.add('animate');
   });
 
   audio.addEventListener('pause', () => {
     playButton.style.display = 'flex';
-    coverImage.style.animationPlayState = "paused";
-    bunnyGif.classList.remove('playing');
-    catGif.classList.remove('playing');
+    bunny.classList.remove('animate');
+    cat.classList.remove('animate');
   });
 </script>
 
