@@ -41,8 +41,18 @@
     font-weight: 600; user-select: none;
   }
 
-  .cover { width: 320px; border-radius: 20px;
-    margin-bottom: 1rem; position: relative; cursor: pointer; 
+  .cover { width: 320px; margin-bottom: 1rem; position: relative; cursor: pointer; }
+
+  /* Always show the image at full width */
+  .cover img {
+    width: 100%;
+    display: block;
+  }
+
+  /* Covers get rounded corners + shadow, but not default.gif */
+  .cover img:not([src*="default.gif"]) {
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
   }
 
   .playlist-title {
@@ -134,7 +144,7 @@
 <div class="center">
   <div class="playlist-title">crimsonriv3r playlist</div>
   <div class="cover" id="coverContainer">
-    <img src="default.gif" alt="Cover" style="width:100%; border-radius: 20px; box-shadow:none;" id="coverImage" />
+    <img src="default.gif" alt="Cover" id="coverImage" />
     <div id="playButton"></div>
   </div>
   <h2 id="songTitle">I'll Take Care of You</h2>
