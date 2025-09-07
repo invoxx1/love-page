@@ -42,8 +42,14 @@
   }
 
   .cover { width: 320px; margin-bottom: 1rem; position: relative; cursor: pointer; }
-
   .cover img { width: 100%; display: block; }
+
+  /* Smaller default gif */
+  .cover img[src*="default.gif"] {
+    width: 150px;
+    margin: 0 auto;
+    display: block;
+  }
 
   /* Covers get rounded corners + shadow, but not default.gif */
   .cover img:not([src*="default.gif"]) {
@@ -80,7 +86,8 @@
     height: 40px;
     position: absolute;
     top: 0;
-    transition: left 0.1s linear, right 0.1s linear;
+    cursor: grab;
+    user-select: none;
   }
   #catGif { left: 0; }
   #bunnyGif { right: 0; }
@@ -131,7 +138,7 @@
   </div>
 
   <!-- GIF progress bar -->
-  <div class="gif-row">
+  <div class="gif-row" id="progressBar">
     <img src="cat.gif" alt="Cat" id="catGif">
     <div class="progress-line"></div>
     <img src="bunny.gif" alt="Bunny" id="bunnyGif">
@@ -151,6 +158,7 @@
   const rightSide = document.getElementById('rightSide');
   const bunny = document.getElementById('bunnyGif');
   const cat = document.getElementById('catGif');
+  const progressBar = document.getElementById('progressBar');
 
   const songs = {
     1: { title: "I'll Take Care of You", artist: "Tyler, The Creator 💙", src: "music.mp3", cover: "cover.jpg" },
@@ -159,6 +167,8 @@
 
   let currentTrack = 1;
   let fullscreenRequested = false;
+  let isDragging = false;
+  let draggingElement = null;
 
   function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
@@ -171,14 +181,10 @@
   });
 
   audio.addEventListener('timeupdate', () => {
+    if (isDragging) return; // don’t move while dragging
     currentTimeElem.textContent = formatTime(audio.currentTime);
-
     const percent = audio.currentTime / audio.duration;
-
-    // Cat moves from left → center
     cat.style.left = (percent * 45) + "%";
-
-    // Bunny moves from right → center
     bunny.style.right = (percent * 45) + "%";
   });
 
@@ -251,6 +257,33 @@
   leftSide.addEventListener('click', () => fadeOutAndSwitch(1));
   rightSide.addEventListener('click', () => fadeOutAndSwitch(2));
   coverImage.addEventListener('click', toggleAudio);
+
+  // --- Dragging Logic ---
+  function startDrag(e, element) {
+    isDragging = true;
+    draggingElement = element;
+  }
+  function stopDrag(e) {
+    if (!isDragging) return;
+    isDragging = false;
+    const rect = progressBar.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const percent = Math.max(0, Math.min(1, x / rect.width));
+    audio.currentTime = percent * audio.duration;
+  }
+  function duringDrag(e) {
+    if (!isDragging || !draggingElement) return;
+    const rect = progressBar.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const percent = Math.max(0, Math.min(1, x / rect.width));
+    cat.style.left = (percent * 45) + "%";
+    bunny.style.right = (percent * 45) + "%";
+  }
+
+  cat.addEventListener('mousedown', e => startDrag(e, cat));
+  bunny.addEventListener('mousedown', e => startDrag(e, bunny));
+  window.addEventListener('mousemove', duringDrag);
+  window.addEventListener('mouseup', stopDrag);
 
   coverImage.src = "default.gif";
   songTitle.style.display = 'none';
